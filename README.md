@@ -14,7 +14,8 @@ En plantas de procesos continuos, la revisión manual de registros históricos d
 ## 📊 Visualización del Panel de Control
 Aquí se puede observar la gráfica combinada generada automáticamente por el script:
 
-![Panel de Monitoreo](monitoreo_completo_planta.png)
+![Panel de Monitoreo](<img width="4170" height="2370" alt="monitoreo_presion" src="https://github.com/user-attachments/assets/0d5be29d-ab63-497c-8734-2f0916304672" />
+)
 
 ## 🧰 Tecnologías Utilizadas
 - **Python 3**
