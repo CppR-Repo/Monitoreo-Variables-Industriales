@@ -1,0 +1,11 @@
+﻿Timestamp;Sensor_Presion_psi;Sensor_Temp_C;Estado_Valvula;Diagnostico
+2026-08-02 03:00:00;530.5;61.29;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 03:15:00;545.2;59.63;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 03:30:00;552.1;50.41;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 03:45:00;510.8;59.87;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 04:15:00;456.28;72.32;ABIERTA;ALERTA: Alta Temperatura detectada. Revisar sistema de refrigeración.
+2026-08-02 07:15:00;444.17;70.95;ABIERTA;ALERTA: Alta Temperatura detectada. Revisar sistema de refrigeración.
+2026-08-02 15:00:00;515.3;69.33;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 15:15:00;522.0;62.37;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 15:30:00;508.4;54.04;ABIERTA;ALERTA: Sobrepresión detectada. Revisar línea de alivio.
+2026-08-02 20:45:00;439.63;73.6;ABIERTA;ALERTA: Alta Temperatura detectada. Revisar sistema de refrigeración.
