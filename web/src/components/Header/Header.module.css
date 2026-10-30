@@ -1,0 +1,149 @@
+/* ==========================================
+   HEADER — INDUSTRIAL MONITORING SYSTEM
+   Mobile First
+   ========================================== */
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+
+    width: 100%;
+    padding: 1.5rem;
+
+    border: 1px solid rgba(0, 210, 255, 0.14);
+    border-radius: 1rem;
+
+    background: linear-gradient(135deg,
+            rgba(17, 29, 45, 0.96),
+            rgba(9, 17, 29, 0.98));
+}
+
+/* Identidad del sistema */
+
+.brand {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.brandIcon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+
+    width: 2.75rem;
+    height: 2.75rem;
+
+    border: 1px solid rgba(0, 210, 255, 0.35);
+    border-radius: 0.75rem;
+
+    background: rgba(0, 210, 255, 0.08);
+}
+
+.brandPulse {
+    width: 0.85rem;
+    height: 0.85rem;
+
+    border: 2px solid #00d2ff;
+    border-radius: 50%;
+
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+}
+
+.brandContent {
+    min-width: 0;
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 0.5rem;
+
+    color: #67d9f4;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    overflow-wrap: anywhere;
+}
+
+.title {
+    margin: 0;
+
+    color: #f1f7fc;
+    font-size: clamp(1.25rem, 4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.description {
+    margin: 0.6rem 0 0;
+
+    color: #a5b6c9;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* Identificador del entorno */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    padding: 0.65rem 0.85rem;
+
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-radius: 999px;
+
+    background: rgba(0, 210, 255, 0.06);
+
+    color: #8ce7fa;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.statusIndicator {
+    flex-shrink: 0;
+
+    width: 0.5rem;
+    height: 0.5rem;
+
+    border-radius: 50%;
+    background: #00d2ff;
+}
+
+/* ==========================================
+   TABLET
+   ========================================== */
+
+@media (min-width: 768px) {
+    .header {
+        flex-direction: row;
+        align-items: center;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    .status {
+        flex-shrink: 0;
+    }
+}
+
+/* ==========================================
+   DESKTOP
+   ========================================== */
+
+@media (min-width: 1200px) {
+    .header {
+        padding: 2.25rem;
+    }
+
+    .brandIcon {
+        width: 3.25rem;
+        height: 3.25rem;
+    }
+}
