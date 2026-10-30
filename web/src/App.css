@@ -37,11 +37,21 @@
 
 
 /* ==========================================
-   DASHBOARD — CONTENT LAYOUT
-   Mobile First
+  CONTENEDOR DEL DASHBOARD
+  Mobile First
+  Organiza verticalmente las secciones:
+  - Tarjetas de monitoreo
+  - Controles de simulación
+  - Futuros gráficos y alertas
    ========================================== */
 
 .dashboard {
+  display: flex;
+  flex-direction: column;
+
+  /* Separación uniforme entre secciones. */
+  gap: 1.5rem;
+
   margin-top: 1.5rem;
 }
 
@@ -56,6 +66,9 @@
 @media (min-width: 768px) {
   .dashboard {
     margin-top: 2rem;
+
+    /* Mayor separación en tablet y desktop. */
+    gap: 2rem;
   }
 
   .dashboard__metrics {
