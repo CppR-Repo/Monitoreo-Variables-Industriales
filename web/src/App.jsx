@@ -14,6 +14,10 @@ import SimulationControls from "./components/SimulationControls/SimulationContro
 // Hook que administra las mediciones y escenarios.
 import { useSimulation } from "./hooks/useSimulation";
 
+// Mostrará el historial de cambios de estado de presión y temperatura durante la simulación
+import { generateEvents } from "./utils/events.js";
+import EventLog from "./components/EventLog/EventLog.jsx";
+
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
 import temperatureIcon from "./assets/icons/temperatura.svg";
@@ -77,6 +81,8 @@ export default function App() {
     pauseSimulation,
     changeSpeed,
   } = useSimulation();
+
+  const events = generateEvents(readings, currentIndex);
 
 
   /* --------------------------------------
@@ -214,6 +220,13 @@ export default function App() {
 
             </Suspense>
 
+          </section>
+
+          <section
+            className="dashboard__events"
+            aria-label="Registro de eventos industriales"
+            >
+              <EventLog events={events} />
           </section>
 
         </main>

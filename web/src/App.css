@@ -68,8 +68,16 @@
   min-width: 0;
 }
 
-/* Tablet y desktop */
+/* --------------------------------------
+    HISTORIAL DE EVENTOS
+---------------------------------------- */
 
+.dashboard__events {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Tablet y desktop */
 @media (min-width: 768px) {
   .dashboard {
     margin-top: 2rem;
@@ -86,4 +94,12 @@
   .dashboard__charts {
     gap: 1.5rem;
   }
+}
+
+@media (min-width: 1100px) {
+
+    .dashboard__events {
+        grid-column: 1 / -1;
+    }
+
 }
