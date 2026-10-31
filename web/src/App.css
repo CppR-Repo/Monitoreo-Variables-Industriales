@@ -57,22 +57,23 @@
 }
 
 
-/* --------------------------------------
-  HISTORIAL DE EVENTOS
----------------------------------------- */
+/* ==========================================
+    SECCIONES INFORMATIVAS DEL DASHBOARD
+=========================================== */
+
+/*
+  Estadísticas, exportación e historial.
+
+  Todas ocupan el ancho disponible
+  dentro del contenedor Flexbox.
+*/
+.dashboard__statistics,
+.dashboard__export,
 .dashboard__events {
     width: 100%;
     min-width: 0;
 }
 
-
-/* --------------------------------------
-  RESUMEN ESTADÍSTICO
--------------------------------------- */
-.dashboard__statistics {
-    width: 100%;
-    min-width: 0;
-}
 
 /* ==========================================
   TABLET

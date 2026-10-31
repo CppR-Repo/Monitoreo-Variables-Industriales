@@ -21,6 +21,8 @@ import EventLog from "./components/EventLog/EventLog.jsx";
 import { calculateStatistics } from "./utils/statistics.js";
 import SimulationStats from "./components/SimulationStats/SimulationStats.jsx";
 
+import ExportControls from "./components/ExportControls/ExportControls.jsx";
+
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
 import temperatureIcon from "./assets/icons/temperatura.svg";
@@ -230,17 +232,29 @@ export default function App() {
           </section>
 
           <section
-            className="dashboard__events"
-            aria-label="Registro de eventos industriales"
-            >
-              <EventLog events={events} />
-          </section>
-
-          <section
             className="dashboard__statistics"
             aria-label="Estadísticas del monitoreo industrial"
           >
             <SimulationStats statistics={statistics} />
+          </section>
+
+          <section
+            className="dashboard__export"
+            aria-label="Descarga de datos industriales"
+          >
+            <ExportControls
+              readings={readings}
+              currentIndex={currentIndex}
+              events={events}
+              scenario={scenario}
+            />
+          </section>
+
+          <section
+            className="dashboard__events"
+            aria-label="Registro de eventos industriales"
+          >
+            <EventLog events={events} />
           </section>
 
         </main>
