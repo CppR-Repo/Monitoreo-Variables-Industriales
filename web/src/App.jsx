@@ -1,7 +1,7 @@
 /* ==========================================
   COMPONENTE PRINCIPAL: APP
   Dashboard de monitoreo industrial
-  ========================================== */
+=========================================== */
 
 // Herramientas de React para carga diferida.
 import { lazy, Suspense } from "react";
@@ -18,6 +18,9 @@ import { useSimulation } from "./hooks/useSimulation";
 import { generateEvents } from "./utils/events.js";
 import EventLog from "./components/EventLog/EventLog.jsx";
 
+import { calculateStatistics } from "./utils/statistics.js";
+import SimulationStats from "./components/SimulationStats/SimulationStats.jsx";
+
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
 import temperatureIcon from "./assets/icons/temperatura.svg";
@@ -28,33 +31,32 @@ import "./App.css";
 
 /* --------------------------------------
   01. CARGA DIFERIDA DE GRÁFICOS
-  -------------------------------------- */
+--------------------------------------- */
 
-/**
- * React.lazy() permite separar MonitoringChart
- * del paquete JavaScript principal.
- *
- * El componente se descarga cuando React
- * necesita mostrar los gráficos.
- *
- * Como MonitoringChart utiliza Recharts,
- * esta estrategia también permite separar
- * parte del código de esa biblioteca.
+/*
+  React.lazy() permite separar MonitoringChart
+  del paquete JavaScript principal.
+
+  El componente se descarga cuando React
+  necesita mostrar los gráficos.
+
+  Como MonitoringChart utiliza Recharts,
+  esta estrategia también permite separar
+  parte del código de esa biblioteca.
  */
 const MonitoringChart = lazy(
   () => import("./components/MonitoringChart/MonitoringChart.jsx")
 );
 
 
-/**
- * COMPONENTE APP
- *
- * Conecta el motor de simulación con:
- *
- * - Encabezado.
- * - Tarjetas de monitoreo.
- * - Controles de simulación.
- * - Gráficos de presión y temperatura.
+/*
+  COMPONENTE APP
+
+  Conecta el motor de simulación con:
+  - Encabezado.
+  - Tarjetas de monitoreo.
+  - Controles de simulación.
+  - Gráficos de presión y temperatura.
  */
 export default function App() {
 
@@ -83,6 +85,12 @@ export default function App() {
   } = useSimulation();
 
   const events = generateEvents(readings, currentIndex);
+
+  const statistics = calculateStatistics(
+    readings,
+    currentIndex,
+    events
+  );
 
 
   /* --------------------------------------
@@ -219,7 +227,6 @@ export default function App() {
               />
 
             </Suspense>
-
           </section>
 
           <section
@@ -227,6 +234,13 @@ export default function App() {
             aria-label="Registro de eventos industriales"
             >
               <EventLog events={events} />
+          </section>
+
+          <section
+            className="dashboard__statistics"
+            aria-label="Estadísticas del monitoreo industrial"
+          >
+            <SimulationStats statistics={statistics} />
           </section>
 
         </main>

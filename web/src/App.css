@@ -22,28 +22,16 @@
   margin-inline: auto;
 }
 
-@media (min-width: 768px) {
-  .app {
-    padding: 1.5rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .app {
-    padding: 2rem;
-  }
-}
-
 
 /* ==========================================
   CONTENEDOR DEL DASHBOARD
   Mobile First
+
   Organiza verticalmente las secciones:
   - Tarjetas de monitoreo
   - Controles de simulación
   - Futuros gráficos y alertas
 ============================================ */
-
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -68,21 +56,35 @@
   min-width: 0;
 }
 
-/* --------------------------------------
-    HISTORIAL DE EVENTOS
----------------------------------------- */
 
+/* --------------------------------------
+  HISTORIAL DE EVENTOS
+---------------------------------------- */
 .dashboard__events {
     width: 100%;
     min-width: 0;
 }
 
-/* Tablet y desktop */
+
+/* --------------------------------------
+  RESUMEN ESTADÍSTICO
+-------------------------------------- */
+.dashboard__statistics {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ==========================================
+  TABLET
+=========================================== */
 @media (min-width: 768px) {
+  .app {
+    padding: 1.5rem;
+  }
+
   .dashboard {
     margin-top: 2rem;
 
-    /* Mayor separación en tablet y desktop. */
     gap: 2rem;
   }
 
@@ -96,10 +98,20 @@
   }
 }
 
+/* ==========================================
+  DESKTOP
+=========================================== */
 @media (min-width: 1100px) {
+  .app {
+    padding: 2rem;
+  }
 
-    .dashboard__events {
-        grid-column: 1 / -1;
-    }
+  .dashboard__events {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard__statistics {
+    grid-column: 1 / -1;
+  }
 
 }
