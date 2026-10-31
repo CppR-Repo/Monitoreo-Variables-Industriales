@@ -61,6 +61,14 @@
   gap: 1rem;
 }
 
+.dashboard__charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+
+  min-width: 0;
+}
+
 /* Tablet y desktop */
 
 @media (min-width: 768px) {
@@ -73,6 +81,10 @@
 
   .dashboard__metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .dashboard__charts {
     gap: 1.5rem;
   }
 }

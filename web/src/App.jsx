@@ -11,6 +11,8 @@ import SimulationControls from "./components/SimulationControls/SimulationContro
 // Hook que administra las mediciones y los escenarios.
 import { useSimulation } from "./hooks/useSimulation";
 
+import MonitoringChart from "./components/MonitoringChart/MonitoringChart.jsx";
+
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
 import temperatureIcon from "./assets/icons/temperatura.svg";
@@ -129,7 +131,7 @@ export default function App() {
             isPlaying={isPlaying}
             isFinished={isFinished}
             speed={speed}
-            
+
             // Controles automáticos
             onPlay={playSimulation}
             onPause={pauseSimulation}
@@ -142,6 +144,41 @@ export default function App() {
             // Función que ejecutará el selector.
             onScenarioChange={changeScenario}
           />
+
+
+          {/* ==========================================
+          GRÁFICOS DE MONITOREO INDUSTRIAL
+          ========================================== */}
+
+          <section
+            className="dashboard__charts"
+            aria-label="Gráficos de monitoreo industrial"
+          >
+            {/* GRÁFICO DE PRESIÓN */}
+            <MonitoringChart
+              title="Presión"
+              data={readings}
+              dataKey="pressure"
+              unit="psi"
+              color="#22d3ee"
+              currentIndex={currentIndex}
+              warningThreshold={480}
+              criticalThreshold={500}
+            />
+
+            {/* GRÁFICO DE TEMPERATURA */}
+            <MonitoringChart
+              title="Temperatura"
+              data={readings}
+              dataKey="temperature"
+              unit="°C"
+              color="#fb923c"
+              currentIndex={currentIndex}
+              warningThreshold={65}
+              criticalThreshold={70}
+            />
+          </section>
+
 
         </main>
       </div>
