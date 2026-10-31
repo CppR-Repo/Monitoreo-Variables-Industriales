@@ -1,17 +1,18 @@
 /* ==========================================
-   COMPONENTE PRINCIPAL: APP
-   Dashboard de monitoreo industrial
-   ========================================== */
+  COMPONENTE PRINCIPAL: APP
+  Dashboard de monitoreo industrial
+  ========================================== */
+
+// Herramientas de React para carga diferida.
+import { lazy, Suspense } from "react";
 
 // Componentes visuales del dashboard.
 import Header from "./components/Header/Header";
 import MetricCard from "./components/MetricCard/MetricCard";
 import SimulationControls from "./components/SimulationControls/SimulationControls";
 
-// Hook que administra las mediciones y los escenarios.
+// Hook que administra las mediciones y escenarios.
 import { useSimulation } from "./hooks/useSimulation";
-
-import MonitoringChart from "./components/MonitoringChart/MonitoringChart.jsx";
 
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
@@ -21,31 +22,42 @@ import temperatureIcon from "./assets/icons/temperatura.svg";
 import "./App.css";
 
 
+/* --------------------------------------
+  01. CARGA DIFERIDA DE GRÁFICOS
+  -------------------------------------- */
+
+/**
+ * React.lazy() permite separar MonitoringChart
+ * del paquete JavaScript principal.
+ *
+ * El componente se descarga cuando React
+ * necesita mostrar los gráficos.
+ *
+ * Como MonitoringChart utiliza Recharts,
+ * esta estrategia también permite separar
+ * parte del código de esa biblioteca.
+ */
+const MonitoringChart = lazy(
+  () => import("./components/MonitoringChart/MonitoringChart.jsx")
+);
+
+
 /**
  * COMPONENTE APP
  *
- * Conecta el estado de la simulación con
- * las tarjetas y el panel de controles.
+ * Conecta el motor de simulación con:
+ *
+ * - Encabezado.
+ * - Tarjetas de monitoreo.
+ * - Controles de simulación.
+ * - Gráficos de presión y temperatura.
  */
 export default function App() {
 
   /* --------------------------------------
-     01. DATOS Y FUNCIONES DEL HOOK
-     -------------------------------------- */
+    02. DATOS Y FUNCIONES DEL HOOK
+  --------------------------------------- */
 
-  /**
-   * Obtenemos:
-   *
-   * scenario: escenario seleccionado.
-   * currentIndex: posición de la lectura actual.
-   * readings: todas las mediciones generadas.
-   * currentReading: medición que se muestra.
-   * statuses: clasificación de las variables.
-   *
-   * nextReading: avanza una medición.
-   * resetSimulation: vuelve al inicio.
-   * changeScenario: selecciona otro escenario.
-   */
   const {
     scenario,
     currentIndex,
@@ -68,26 +80,28 @@ export default function App() {
 
 
   /* --------------------------------------
-     02. INTERFAZ PRINCIPAL
-     -------------------------------------- */
+    03. INTERFAZ PRINCIPAL
+  --------------------------------------- */
 
   return (
     <div className="app">
       <div className="app__container">
 
-        {/* Encabezado principal. */}
+        {/* ENCABEZADO PRINCIPAL */}
         <Header />
 
         <main className="dashboard">
 
           {/* --------------------------------
               TARJETAS DE MONITOREO
-              -------------------------------- */}
+            --------------------------------- */}
 
           <section
             className="dashboard__metrics"
             aria-label="Variables del proceso"
           >
+
+            {/* TARJETA DE PRESIÓN */}
             <MetricCard
               title="Presión"
               value={currentReading.pressure}
@@ -98,6 +112,7 @@ export default function App() {
               max={500}
             />
 
+            {/* TARJETA DE TEMPERATURA */}
             <MetricCard
               title="Temperatura"
               value={currentReading.temperature}
@@ -107,14 +122,16 @@ export default function App() {
               min={0}
               max={70}
             />
+
           </section>
 
 
           {/* --------------------------------
               CONTROLES DE SIMULACIÓN
-              -------------------------------- */}
+            --------------------------------- */}
 
           <SimulationControls
+
             // Escenario seleccionado.
             scenario={scenario}
 
@@ -124,64 +141,85 @@ export default function App() {
             // Cantidad total de mediciones.
             totalReadings={readings.length}
 
-            // Tiempo correspondiente a la lectura.
+            // Tiempo de la lectura actual.
             elapsedMinutes={currentReading.elapsedMinutes}
 
-            // Estado de reproducción
+            // Estado de reproducción.
             isPlaying={isPlaying}
             isFinished={isFinished}
             speed={speed}
 
-            // Controles automáticos
+            // Controles automáticos.
             onPlay={playSimulation}
             onPause={pauseSimulation}
             onSpeedChange={changeSpeed}
 
-            // Funciones que ejecutarán los botones.
+            // Controles manuales.
             onNext={nextReading}
             onReset={resetSimulation}
 
-            // Función que ejecutará el selector.
+            // Selector de escenario.
             onScenarioChange={changeScenario}
           />
 
 
-          {/* ==========================================
-          GRÁFICOS DE MONITOREO INDUSTRIAL
-          ========================================== */}
+          {/* ==================================
+              GRÁFICOS DE MONITOREO INDUSTRIAL
+            =================================== */}
 
           <section
             className="dashboard__charts"
             aria-label="Gráficos de monitoreo industrial"
           >
-            {/* GRÁFICO DE PRESIÓN */}
-            <MonitoringChart
-              title="Presión"
-              data={readings}
-              dataKey="pressure"
-              unit="psi"
-              color="#22d3ee"
-              currentIndex={currentIndex}
-              warningThreshold={480}
-              criticalThreshold={500}
-            />
 
-            {/* GRÁFICO DE TEMPERATURA */}
-            <MonitoringChart
-              title="Temperatura"
-              data={readings}
-              dataKey="temperature"
-              unit="°C"
-              color="#fb923c"
-              currentIndex={currentIndex}
-              warningThreshold={65}
-              criticalThreshold={70}
-            />
+            {/*
+              Suspense muestra el mensaje
+              provisional mientras se descarga
+              el componente MonitoringChart.
+
+              Una vez cargado, ambos gráficos
+              utilizan el mismo módulo.
+            */}
+            <Suspense
+              fallback={
+                <p role="status">
+                  Preparando gráficos de monitoreo...
+                </p>
+              }
+            >
+
+              {/* GRÁFICO DE PRESIÓN */}
+              <MonitoringChart
+                title="Presión"
+                data={readings}
+                dataKey="pressure"
+                unit="psi"
+                color="#22d3ee"
+                currentIndex={currentIndex}
+                warningThreshold={480}
+                criticalThreshold={500}
+              />
+
+              {/* GRÁFICO DE TEMPERATURA */}
+              <MonitoringChart
+                title="Temperatura"
+                data={readings}
+                dataKey="temperature"
+                unit="°C"
+                color="#fb923c"
+                currentIndex={currentIndex}
+                warningThreshold={65}
+                criticalThreshold={70}
+              />
+
+            </Suspense>
+
           </section>
 
-
         </main>
+
       </div>
     </div>
   );
 }
+

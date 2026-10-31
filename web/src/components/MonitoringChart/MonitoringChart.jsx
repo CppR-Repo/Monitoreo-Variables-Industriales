@@ -42,7 +42,7 @@ export default function MonitoringChart({
 }) {
 
     /* --------------------------------------
-       01. PREPARACIÓN DE DATOS
+    01. PREPARACIÓN DE DATOS
        -------------------------------------- */
 
     /**
