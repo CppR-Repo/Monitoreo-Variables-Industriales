@@ -1,22 +1,17 @@
-
 /* ==========================================
     COMPONENT: EVENT LOG
     Historial de eventos y alarmas industriales
 =========================================== */
 
+import { useState } from "react";
+
 import styles from "./EventLog.module.css";
 
 
-/* ---------------------------------------
+/* --------------------------------------
     01. CONFIGURACIÓN DE ESTADOS
----------------------------------------- */
+--------------------------------------- */
 
-/*
-    Información visual asociada a cada estado.
-
-    Las claves coinciden con los valores
-    devueltos por evaluateReading().
-*/
 const STATUS_LABELS = {
     normal: "Normal",
     warning: "Advertencia",
@@ -29,24 +24,71 @@ const STATUS_LABELS = {
 --------------------------------------- */
 
 /*
-    Muestra los cambios de estado registrados
-    durante la simulación.
+    Muestra el historial de transiciones
+    y permite filtrar por variable y estado.
 
     @param {Object} props
     @param {Array} props.events
-*/
+ */
 export default function EventLog({ events = [] }) {
 
     /* ----------------------------------
-        ORDEN DE LOS EVENTOS
+        ESTADO DE LOS FILTROS
+    ----------------------------------- */
+
+    const [variableFilter, setVariableFilter] = useState("all");
+    const [statusFilter, setStatusFilter] = useState("all");
+
+
+    /* ----------------------------------
+        FILTRADO DE EVENTOS
     ----------------------------------- */
 
     /*
-        Mostramos primero los eventos más
-        recientes, sin modificar el arreglo
-        original recibido por props.
+        Aplicamos ambos filtros sobre los
+        eventos recibidos por props.
+
+        No modificamos el arreglo original.
      */
-    const sortedEvents = [...events].reverse();
+    const filteredEvents = events.filter((event) => {
+
+        const matchesVariable =
+            variableFilter === "all" ||
+            event.variable === variableFilter;
+
+        const matchesStatus =
+            statusFilter === "all" ||
+            event.status === statusFilter;
+
+        return matchesVariable && matchesStatus;
+    });
+
+
+    /* ----------------------------------
+        ORDEN CRONOLÓGICO
+    ----------------------------------- */
+
+    // Los eventos más recientes aparecen primero.
+    const sortedEvents = [...filteredEvents].reverse();
+
+
+    /* ----------------------------------
+        RESTABLECER FILTROS
+    ----------------------------------- */
+
+    function resetFilters() {
+        setVariableFilter("all");
+        setStatusFilter("all");
+    }
+
+    const hasActiveFilters =
+        variableFilter !== "all" ||
+        statusFilter !== "all";
+
+
+    /* ----------------------------------
+        RENDERIZADO
+    ----------------------------------- */
 
     return (
         <section
@@ -80,12 +122,101 @@ export default function EventLog({ events = [] }) {
 
                 <span
                     className={styles.counter}
-                    aria-label={`${events.length} eventos registrados`}
+                    aria-label={`${filteredEvents.length} eventos encontrados de ${events.length} registrados`}
                 >
-                    {events.length} eventos
+                    {filteredEvents.length} / {events.length} eventos
                 </span>
 
             </header>
+
+
+            {/* FILTROS */}
+
+            <div
+                className={styles.filters}
+                aria-label="Filtros del historial"
+            >
+
+                <div className={styles.filterGroup}>
+
+                    <label
+                        className={styles.filterLabel}
+                        htmlFor="event-variable-filter"
+                    >
+                        Variable
+                    </label>
+
+                    <select
+                        id="event-variable-filter"
+                        className={styles.filterSelect}
+                        value={variableFilter}
+                        onChange={(event) =>
+                            setVariableFilter(event.target.value)
+                        }
+                    >
+                        <option value="all">
+                            Todas las variables
+                        </option>
+
+                        <option value="pressure">
+                            Presión
+                        </option>
+
+                        <option value="temperature">
+                            Temperatura
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div className={styles.filterGroup}>
+
+                    <label
+                        className={styles.filterLabel}
+                        htmlFor="event-status-filter"
+                    >
+                        Estado
+                    </label>
+
+                    <select
+                        id="event-status-filter"
+                        className={styles.filterSelect}
+                        value={statusFilter}
+                        onChange={(event) =>
+                            setStatusFilter(event.target.value)
+                        }
+                    >
+                        <option value="all">
+                            Todos los estados
+                        </option>
+
+                        <option value="normal">
+                            Normal
+                        </option>
+
+                        <option value="warning">
+                            Advertencia
+                        </option>
+
+                        <option value="critical">
+                            Crítico
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    className={styles.resetButton}
+                    onClick={resetFilters}
+                    disabled={!hasActiveFilters}
+                >
+                    Restablecer filtros
+                </button>
+
+            </div>
 
 
             {/* CONTENIDO */}
@@ -111,6 +242,30 @@ export default function EventLog({ events = [] }) {
                     </p>
                 </div>
 
+            ) : sortedEvents.length === 0 ? (
+
+                <div
+                    className={styles.emptyState}
+                    role="status"
+                >
+                    <p className={styles.emptyTitle}>
+                        No se encontraron eventos
+                    </p>
+
+                    <p className={styles.emptyDescription}>
+                        No hay eventos que coincidan
+                        con los filtros seleccionados.
+                    </p>
+
+                    <button
+                        type="button"
+                        className={styles.resetButton}
+                        onClick={resetFilters}
+                    >
+                        Mostrar todos los eventos
+                    </button>
+                </div>
+
             ) : (
 
                 <div className={styles.tableWrapper}>
@@ -118,9 +273,10 @@ export default function EventLog({ events = [] }) {
                     <table className={styles.table}>
 
                         <caption className={styles.srOnly}>
-                            Historial de eventos de presión
-                            y temperatura, ordenado del
-                            más reciente al más antiguo.
+                            Historial filtrado de eventos
+                            de presión y temperatura,
+                            ordenado del más reciente
+                            al más antiguo.
                         </caption>
 
                         <thead>
