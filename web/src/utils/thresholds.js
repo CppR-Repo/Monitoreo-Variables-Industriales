@@ -1,8 +1,7 @@
-
 /* ==========================================
-   EVALUACIÓN DE VARIABLES INDUSTRIALES
-   Umbrales didácticos de simulación
-   ========================================== */
+    EVALUACIÓN DE VARIABLES INDUSTRIALES
+    Umbrales didácticos de simulación
+=========================================== */
 
 export const THRESHOLDS = Object.freeze({
     pressure: {
@@ -18,16 +17,16 @@ export const THRESHOLDS = Object.freeze({
     },
 });
 
-/**
- * Evalúa una lectura frente a sus umbrales.
- *
- * Estados:
- * - normal: valor inferior a advertencia
- * - warning: advertencia alcanzada
- * - critical: límite crítico alcanzado
- *
- * Los valores no válidos se identifican
- * como "invalid", sin tratarlos como normales.
+/*
+    Evalúa una lectura frente a sus umbrales.
+
+    Estados:
+    - normal: valor inferior a advertencia
+    - warning: advertencia alcanzada
+    - critical: límite crítico alcanzado
+
+    Los valores no válidos se identifican
+    como "invalid", sin tratarlos como normales.
  */
 export function evaluateStatus(value, thresholds) {
     if (
@@ -48,8 +47,8 @@ export function evaluateStatus(value, thresholds) {
     return "normal";
 }
 
-/**
- * Evalúa simultáneamente presión y temperatura.
+/*
+    Evalúa simultáneamente presión y temperatura.
  */
 export function evaluateReading(reading) {
     return {

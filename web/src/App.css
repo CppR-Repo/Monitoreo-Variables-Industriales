@@ -1,8 +1,7 @@
-
 /* ==========================================
-   APP — MAIN LAYOUT
-   Mobile First
-   ========================================== */
+  APP — MAIN LAYOUT
+  Mobile First
+=========================================== */
 
 .app {
   min-height: 100vh;
@@ -43,7 +42,7 @@
   - Tarjetas de monitoreo
   - Controles de simulación
   - Futuros gráficos y alertas
-   ========================================== */
+============================================ */
 
 .dashboard {
   display: flex;

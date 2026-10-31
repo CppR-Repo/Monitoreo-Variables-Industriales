@@ -1,35 +1,34 @@
-
 /* ==========================================
-   MOTOR DE SIMULACIÓN INDUSTRIAL
-   Modelo dinámico simplificado
-   ========================================== */
+    MOTOR DE SIMULACIÓN INDUSTRIAL
+    Modelo dinámico simplificado
+=========================================== */
 
 /**
- * CONFIGURACIÓN GENERAL
- *
- * Define los parámetros del modelo.
- *
- * intervalMinutes:
- *   Tiempo simulado entre mediciones.
- *
- * totalReadings:
- *   Cantidad de mediciones generadas.
- *
- * nominal:
- *   Valor al que tiende a regresar la variable.
- *
- * recovery:
- *   Coeficiente de recuperación hacia el valor nominal.
- *
- * noise:
- *   Amplitud máxima de la variación aleatoria.
- *
- * min:
- *   Límite inferior permitido por el modelo.
- *
- * NOTA:
- * Los parámetros son didácticos y no están
- * calibrados con una instalación industrial real.
+    CONFIGURACIÓN GENERAL
+
+    Define los parámetros del modelo.
+
+    intervalMinutes:
+    Tiempo simulado entre mediciones.
+
+    totalReadings:
+    Cantidad de mediciones generadas.
+
+    nominal:
+    Valor al que tiende a regresar la variable.
+
+    recovery:
+    Coeficiente de recuperación hacia el valor nominal.
+
+    noise:
+    Amplitud máxima de la variación aleatoria.
+
+    min:
+    Límite inferior permitido por el modelo.
+
+    NOTA:
+    Los parámetros son didácticos y no están
+    calibrados con una instalación industrial real.
  */
 export const SIMULATION_CONFIG = Object.freeze({
     intervalMinutes: 15,
@@ -52,24 +51,23 @@ export const SIMULATION_CONFIG = Object.freeze({
 
 
 /* ==========================================
-   ESCENARIOS DE SIMULACIÓN
-   ========================================== */
+    ESCENARIOS DE SIMULACIÓN
+=========================================== */
 
-/**
- * EVENTOS DE SOBREPRESIÓN
- *
- * Cada evento define:
- *
- * startIndex:
- *   Primera medición afectada.
- *
- * endIndex:
- *   Última medición afectada.
- *
- * pressureInput:
- *   Incremento adicional de presión por paso.
- *
- * Los extremos del intervalo son inclusivos.
+/*
+    EVENTOS DE SOBREPRESIÓN
+
+    Cada evento define:
+    startIndex:
+    Primera medición afectada.
+
+    endIndex:
+    Última medición afectada.
+
+    pressureInput:
+    Incremento adicional de presión por paso.
+
+    Los extremos del intervalo son inclusivos.
  */
 const PRESSURE_EVENTS = Object.freeze([
     Object.freeze({
@@ -86,12 +84,12 @@ const PRESSURE_EVENTS = Object.freeze([
 ]);
 
 /**
- * EVENTOS DE SOBRETEMPERATURA
- *
- * temperatureInput:
- *   Incremento adicional de temperatura por paso.
- *
- * Estos eventos son nuevos y didácticos.
+    EVENTOS DE SOBRETEMPERATURA
+
+    temperatureInput:
+    Incremento adicional de temperatura por paso.
+
+    Estos eventos son nuevos y didácticos.
  */
 const TEMPERATURE_EVENTS = Object.freeze([
     Object.freeze({
@@ -108,19 +106,19 @@ const TEMPERATURE_EVENTS = Object.freeze([
 ]);
 
 /**
- * ESCENARIOS DISPONIBLES
- *
- * normal:
- *   No se aplican perturbaciones adicionales.
- *
- * overpressure:
- *   Solo se altera la presión.
- *
- * overtemperature:
- *   Solo se altera la temperatura.
- *
- * combined:
- *   Incluye los eventos de ambas variables.
+    ESCENARIOS DISPONIBLES
+
+    normal:
+    No se aplican perturbaciones adicionales.
+
+    overpressure:
+    Solo se altera la presión.
+
+    overtemperature:
+    Solo se altera la temperatura.
+
+    combined:
+    Incluye los eventos de ambas variables.
  */
 export const SIMULATION_SCENARIOS = Object.freeze({
     normal: Object.freeze([]),
@@ -137,22 +135,22 @@ export const SIMULATION_SCENARIOS = Object.freeze({
 
 
 /* ==========================================
-   GENERADOR PSEUDOALEATORIO
-   ========================================== */
+    GENERADOR PSEUDOALEATORIO
+=========================================== */
 
 /**
- * Crea un generador de números pseudoaleatorios.
- *
- * La semilla permite reproducir exactamente
- * la misma secuencia de valores.
- *
- * Esto es útil para:
- * - Comparar escenarios.
- * - Ejecutar pruebas automatizadas.
- * - Reproducir resultados.
- *
- * Devuelve números desde 0 (incluido)
- * hasta 1 (excluido).
+    Crea un generador de números pseudoaleatorios.
+
+    La semilla permite reproducir exactamente
+    la misma secuencia de valores.
+
+    Esto es útil para:
+    - Comparar escenarios.
+    - Ejecutar pruebas automatizadas.
+    - Reproducir resultados.
+
+    Devuelve números desde 0 (incluido)
+    hasta 1 (excluido).
  */
 export function createRandomGenerator(seed = 42) {
     // La semilla debe ser un número entero.
@@ -178,22 +176,20 @@ export function createRandomGenerator(seed = 42) {
 
 
 /* ==========================================
-   EVOLUCIÓN DINÁMICA
-   ========================================== */
+    EVOLUCIÓN DINÁMICA
+=========================================== */
 
 /**
- * Calcula el siguiente valor de una variable.
- *
- * El cálculo considera:
- *
- * 1. Valor actual.
- * 2. Tendencia de recuperación.
- * 3. Variación aleatoria.
- * 4. Límite mínimo permitido.
- *
- * Fórmula simplificada:
- *
- * siguiente = actual + tendencia + ruido
+    Calcula el siguiente valor de una variable.
+
+    El cálculo considera:
+    1. Valor actual.
+    2. Tendencia de recuperación.
+    3. Variación aleatoria.
+    4. Límite mínimo permitido.
+
+    Fórmula simplificada:
+    siguiente = actual + tendencia + ruido
  */
 export function calculateNextValue({
     current,
@@ -218,17 +214,16 @@ export function calculateNextValue({
 
 
 /* ==========================================
-   PERTURBACIONES CONTROLADAS
-   ========================================== */
+    PERTURBACIONES CONTROLADAS  ========================================== */
 
-/**
- * Obtiene la perturbación de PRESIÓN
- * correspondiente al índice actual.
- *
- * Si no existe un evento activo, devuelve 0.
- *
- * El operador ?? permite interpretar como 0
- * los eventos que no afectan a la presión.
+/*
+    Obtiene la perturbación de PRESIÓN
+    correspondiente al índice actual.
+
+    Si no existe un evento activo, devuelve 0.
+
+    El operador ?? permite interpretar como 0
+    los eventos que no afectan a la presión.
  */
 export function getPressureDisturbance(
     index,
@@ -256,14 +251,14 @@ export function getPressureDisturbance(
     }, 0);
 }
 
-/**
- * Obtiene la perturbación de TEMPERATURA
- * correspondiente al índice actual.
- *
- * Funciona igual que la función de presión,
- * pero utiliza temperatureInput.
- *
- * Si no hay perturbaciones activas, devuelve 0.
+/*
+    Obtiene la perturbación de TEMPERATURA
+    correspondiente al índice actual.
+
+    Funciona igual que la función de presión,
+    pero utiliza temperatureInput.
+
+    Si no hay perturbaciones activas, devuelve 0.
  */
 export function getTemperatureDisturbance(
     index,
@@ -293,28 +288,28 @@ export function getTemperatureDisturbance(
 
 
 /* ==========================================
-   GENERACIÓN DE MEDICIONES
-   ========================================== */
+    GENERACIÓN DE MEDICIONES
+=========================================== */
 
 /**
- * Genera una serie de mediciones simuladas.
- *
- * Parámetros:
- *
- * seed:
- *   Semilla para reproducir los resultados.
- *
- * scenario:
- *   Escenario que se desea simular.
- *
- * config:
- *   Configuración de las variables.
- *
- * Cada medición contiene:
- * - index
- * - elapsedMinutes
- * - pressure
- * - temperature
+    Genera una serie de mediciones simuladas.
+
+    Parámetros:
+
+    seed:
+    Semilla para reproducir los resultados.
+
+    scenario:
+    Escenario que se desea simular.
+
+    config:
+    Configuración de las variables.
+
+    Cada medición contiene:
+    - index
+    - elapsedMinutes
+    - pressure
+    - temperature
  */
 export function generateSimulation({
     seed = 42,
@@ -348,8 +343,8 @@ export function generateSimulation({
         if (index > 0) {
 
             /* --------------------------------------
-               ACTUALIZACIÓN DE PRESIÓN
-               -------------------------------------- */
+                ACTUALIZACIÓN DE PRESIÓN
+            -------------------------------------- */
 
             // Calculamos la evolución natural de presión.
             pressure = calculateNextValue({
@@ -368,9 +363,9 @@ export function generateSimulation({
             );
 
 
-            /* --------------------------------------
-               ACTUALIZACIÓN DE TEMPERATURA
-               -------------------------------------- */
+            /* ------------------------------------------
+                ACTUALIZACIÓN DE TEMPERATURA
+            ------------------------------------------ */
 
             // Calculamos la evolución natural de temperatura.
             temperature = calculateNextValue({
@@ -391,8 +386,8 @@ export function generateSimulation({
 
 
         /* --------------------------------------
-           REGISTRO DE MEDICIONES
-           -------------------------------------- */
+            REGISTRO DE MEDICIONES
+        --------------------------------------- */
 
         // Guardamos la lectura correspondiente.
         readings.push({

@@ -1,7 +1,7 @@
 /* ==========================================
     COMPONENTE: MonitoringChart
     Gráfico de monitoreo de variables industriales
-   ========================================== */
+=========================================== */
 
 import {
     CartesianGrid,
@@ -43,7 +43,7 @@ export default function MonitoringChart({
 
     /* --------------------------------------
     01. PREPARACIÓN DE DATOS
-       -------------------------------------- */
+    --------------------------------------- */
 
     /**
      * Mostramos las mediciones desde el inicio
@@ -56,7 +56,7 @@ export default function MonitoringChart({
 
     /* --------------------------------------
     ESCALA VERTICAL DEL GRÁFICO
-   -------------------------------------- */
+    -------------------------------------- */
 
     /**
      * Calculamos los valores mínimo y máximo
@@ -263,19 +263,19 @@ export default function MonitoringChart({
 
 
 /* --------------------------------------
-   MARCADOR DE ANOMALÍAS
-   -------------------------------------- */
+    MARCADOR DE ANOMALÍAS
+--------------------------------------- */
 
-/**
- * Dibuja un marcador sobre las mediciones
- * que alcanzan los límites operativos.
- *
- * - Normal: no se dibuja ningún marcador.
- * - Advertencia: círculo amarillo.
- * - Crítico: círculo rojo.
- *
- * Recibe las coordenadas calculadas por
- * Recharts y el valor de la medición.
+/*
+    Dibuja un marcador sobre las mediciones
+    que alcanzan los límites operativos.
+
+    - Normal: no se dibuja ningún marcador.
+    - Advertencia: círculo amarillo.
+    - Crítico: círculo rojo.
+
+    Recibe las coordenadas calculadas por
+    Recharts y el valor de la medición.
  */
 function AnomalyDot({
     cx,

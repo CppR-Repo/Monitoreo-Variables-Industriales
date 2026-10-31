@@ -1,8 +1,8 @@
 
 /* ==========================================
-   HOOK PERSONALIZADO: useSimulation
-   Gestión del estado de la simulación en React
-   ========================================== */
+    HOOK PERSONALIZADO: useSimulation
+    Gestión del estado de la simulación en React
+=========================================== */
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -16,26 +16,25 @@ import {
     evaluateReading,
 } from "../utils/thresholds.js";
 
-/**
- * HOOK: useSimulation
- *
- * Responsabilidades:
- *
- * 1. Seleccionar el escenario.
- * 2. Generar las mediciones.
- * 3. Mantener la lectura actual.
- * 4. Avanzar manualmente.
- * 5. Reproducir automáticamente.
- * 6. Pausar la reproducción.
- * 7. Configurar la velocidad.
- * 8. Reiniciar la simulación.
- * 9. Evaluar presión y temperatura.
+/*
+    HOOK: useSimulation
+
+    Responsabilidades:
+    1. Seleccionar el escenario.
+    2. Generar las mediciones.
+    3. Mantener la lectura actual.
+    4. Avanzar manualmente.
+    5. Reproducir automáticamente.
+    6. Pausar la reproducción.
+    7. Configurar la velocidad.
+    8. Reiniciar la simulación.
+    9. Evaluar presión y temperatura.
  */
 export function useSimulation() {
 
     /* --------------------------------------
-       01. ESTADOS PRINCIPALES
-       -------------------------------------- */
+        01. ESTADOS PRINCIPALES
+    --------------------------------------- */
 
     // Escenario seleccionado.
     const [scenario, setScenario] = useState("normal");
@@ -46,26 +45,26 @@ export function useSimulation() {
     // Indica si la reproducción automática está activa.
     const [isPlaying, setIsPlaying] = useState(false);
 
-    /**
-     * Intervalo entre lecturas, en milisegundos.
-     *
-     * 1000 ms = 1 segundo real por lectura.
-     * 500 ms  = 0,5 segundos reales por lectura.
-     * 250 ms  = 0,25 segundos reales por lectura.
+    /*
+        Intervalo entre lecturas, en milisegundos.
+
+        1000 ms = 1 segundo real por lectura.
+        500 ms  = 0,5 segundos reales por lectura.
+        250 ms  = 0,25 segundos reales por lectura.
      */
     const [speed, setSpeed] = useState(1000);
 
 
     /* --------------------------------------
-       02. GENERACIÓN DE MEDICIONES
-       -------------------------------------- */
+        02. GENERACIÓN DE MEDICIONES
+    --------------------------------------- */
 
-    /**
-     * Generamos las mediciones únicamente cuando
-     * cambia el escenario.
-     *
-     * La semilla fija permite obtener resultados
-     * reproducibles.
+    /*
+        Generamos las mediciones únicamente cuando
+        cambia el escenario.
+
+        La semilla fija permite obtener resultados
+        reproducibles.
      */
     const readings = useMemo(() => {
         return generateSimulation({
@@ -75,9 +74,9 @@ export function useSimulation() {
     }, [scenario]);
 
 
-    /* --------------------------------------
-       03. LECTURA Y ESTADOS ACTUALES
-       -------------------------------------- */
+    /* -----------------------------------------
+        03. LECTURA Y ESTADOS ACTUALES
+    ----------------------------------------- */
 
     // Obtenemos la medición correspondiente al índice.
     const currentReading = readings[currentIndex];
@@ -89,17 +88,17 @@ export function useSimulation() {
     const isFinished = currentIndex >= readings.length - 1;
 
 
-    /* --------------------------------------
-       04. REPRODUCCIÓN AUTOMÁTICA
-       -------------------------------------- */
+    /* -----------------------------------------
+        04. REPRODUCCIÓN AUTOMÁTICA
+    ----------------------------------------- */
 
-    /**
-     * useEffect administra el temporizador.
-     *
-     * Solo se activa cuando isPlaying es true
-     * y todavía quedan mediciones por recorrer.
-     *
-     * Cada intervalo incrementa currentIndex.
+    /*
+        useEffect administra el temporizador.
+
+        Solo se activa cuando isPlaying es true
+        y todavía quedan mediciones por recorrer.
+
+        Cada intervalo incrementa currentIndex.
      */
     useEffect(() => {
 
@@ -123,17 +122,16 @@ export function useSimulation() {
 
         }, speed);
 
-        /**
-         * Función de limpieza.
-         *
-         * React ejecuta esta función cuando:
-         *
-         * - Se pausa la reproducción.
-         * - Cambia la velocidad.
-         * - Se alcanza la última lectura.
-         * - El componente se desmonta.
-         *
-         * Evita mantener temporizadores innecesarios.
+        /*
+            Función de limpieza.
+
+            React ejecuta esta función cuando:
+            - Se pausa la reproducción.
+            - Cambia la velocidad.
+            - Se alcanza la última lectura.
+            - El componente se desmonta.
+
+            Evita mantener temporizadores innecesarios.
          */
         return () => {
             clearInterval(intervalId);
@@ -142,15 +140,15 @@ export function useSimulation() {
     }, [isPlaying, isFinished, speed, readings.length]);
 
 
-    /* --------------------------------------
-       05. AVANCE MANUAL
-       -------------------------------------- */
+    /* ---------------------------------------
+        05. AVANCE MANUAL
+    --------------------------------------- */
 
-    /**
-     * Avanza una medición.
-     *
-     * Pausamos primero la reproducción para evitar
-     * que el temporizador avance simultáneamente.
+    /*
+        Avanza una medición.
+
+        Pausamos primero la reproducción para evitar
+        que el temporizador avance simultáneamente.
      */
     function nextReading() {
         setIsPlaying(false);
@@ -165,13 +163,13 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-       06. REPRODUCIR
-       -------------------------------------- */
+        06. REPRODUCIR
+    --------------------------------------- */
 
-    /**
-     * Inicia o reanuda la reproducción.
-     *
-     * No inicia si ya estamos en la última lectura.
+    /*
+        Inicia o reanuda la reproducción.
+
+        No inicia si ya estamos en la última lectura.
      */
     function playSimulation() {
         if (isFinished) {
@@ -183,14 +181,14 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-       07. PAUSAR
-       -------------------------------------- */
+        07. PAUSAR
+    --------------------------------------- */
 
-    /**
-     * Detiene el avance automático.
-     *
-     * Conserva el índice actual para poder
-     * reanudar desde la misma medición.
+    /*
+        Detiene el avance automático.
+
+        Conserva el índice actual para poder
+        reanudar desde la misma medición.
      */
     function pauseSimulation() {
         setIsPlaying(false);
@@ -198,12 +196,12 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-       08. REINICIAR
-       -------------------------------------- */
+        08. REINICIAR
+    --------------------------------------- */
 
-    /**
-     * Detiene la reproducción y vuelve
-     * a la primera medición.
+    /*
+        Detiene la reproducción y vuelve
+        a la primera medición.
      */
     function resetSimulation() {
         setIsPlaying(false);
@@ -212,14 +210,14 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-       09. CAMBIAR ESCENARIO
-       -------------------------------------- */
+        09. CAMBIAR ESCENARIO
+    --------------------------------------- */
 
-    /**
-     * Detiene la reproducción, selecciona
-     * un escenario y vuelve al inicio.
-     *
-     * useMemo generará las nuevas mediciones.
+    /*
+        Detiene la reproducción, selecciona
+        un escenario y vuelve al inicio.
+
+        useMemo generará las nuevas mediciones.
      */
     function changeScenario(newScenario) {
         setIsPlaying(false);
@@ -229,24 +227,24 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-       10. CAMBIAR VELOCIDAD
-       -------------------------------------- */
+        10. CAMBIAR VELOCIDAD
+    --------------------------------------- */
 
-    /**
-     * Actualiza el intervalo de reproducción.
-     *
-     * Al cambiar speed, useEffect limpia el
-     * temporizador anterior y crea otro con
-     * el nuevo intervalo si estamos reproduciendo.
+    /*
+        Actualiza el intervalo de reproducción.
+
+        Al cambiar speed, useEffect limpia el
+        temporizador anterior y crea otro con
+        el nuevo intervalo si estamos reproduciendo.
      */
     function changeSpeed(newSpeed) {
         setSpeed(newSpeed);
     }
 
 
-    /* --------------------------------------
-       11. DATOS Y FUNCIONES DISPONIBLES
-       -------------------------------------- */
+    /* ---------------------------------------------
+        11. DATOS Y FUNCIONES DISPONIBLES
+    --------------------------------------------- */
 
     return {
         // Estado general.

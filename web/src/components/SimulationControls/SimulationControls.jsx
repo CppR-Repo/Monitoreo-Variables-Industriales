@@ -1,18 +1,18 @@
 
 /* ==========================================
-   COMPONENTE: SIMULATION CONTROLS
-   Controles de la simulación industrial
-   ========================================== */
+    COMPONENTE: SIMULATION CONTROLS
+    Controles de la simulación industrial
+=========================================== */
 
 import styles from "./SimulationControls.module.css";
 
 /* ------------------------------------------
-   01. ESCENARIOS DISPONIBLES
-   ------------------------------------------ */
+    01. ESCENARIOS DISPONIBLES
+------------------------------------------- */
 
-/**
- * Cada valor debe coincidir con los escenarios
- * definidos en nuestro motor simulation.js.
+/*
+    Cada valor debe coincidir con los escenarios
+    definidos en nuestro motor simulation.js.
  */
 const SCENARIOS = [
     { value: "normal", label: "Operación normal" },
@@ -22,20 +22,20 @@ const SCENARIOS = [
 ];
 
 
-/* ------------------------------------------
-   02. VELOCIDADES DE REPRODUCCIÓN
-   ------------------------------------------ */
+/* -------------------------------------------
+    02. VELOCIDADES DE REPRODUCCIÓN
+------------------------------------------- */
 
-/**
- * Las velocidades representan el tiempo real
- * transcurrido entre dos mediciones.
- *
- * Cada medición representa 15 minutos
- * de tiempo industrial simulado.
- *
- * 1000 ms = velocidad normal (1x).
- * 500 ms  = velocidad doble (2x).
- * 250 ms  = velocidad cuádruple (4x).
+/*
+    Las velocidades representan el tiempo real
+    transcurrido entre dos mediciones.
+
+    Cada medición representa 15 minutos
+    de tiempo industrial simulado.
+
+    1000 ms = velocidad normal (1x).
+    500 ms  = velocidad doble (2x).
+    250 ms  = velocidad cuádruple (4x).
  */
 const SPEED_OPTIONS = [
     { value: 1000, label: "1x — Normal" },
@@ -45,15 +45,15 @@ const SPEED_OPTIONS = [
 
 
 /* ------------------------------------------
-   03. COMPONENTE PRINCIPAL
-   ------------------------------------------ */
+    03. COMPONENTE PRINCIPAL
+------------------------------------------- */
 
-/**
- * Recibe los datos y las funciones del hook
- * a través de las propiedades de App.jsx.
- *
- * No genera mediciones ni administra
- * temporizadores por su cuenta.
+/*
+    Recibe los datos y las funciones del hook
+    a través de las propiedades de App.jsx.
+
+    No genera mediciones ni administra
+    temporizadores por su cuenta.
  */
 export default function SimulationControls({
     // Información de la simulación.
@@ -76,9 +76,9 @@ export default function SimulationControls({
     onSpeedChange,
 }) {
 
-    /* --------------------------------------
-       04. VALORES CALCULADOS
-       -------------------------------------- */
+    /* ----------------------------------------
+        04. VALORES CALCULADOS
+    ---------------------------------------- */
 
     // Los índices comienzan en cero.
     // Mostramos las mediciones comenzando en uno.
@@ -89,8 +89,8 @@ export default function SimulationControls({
 
 
     /* --------------------------------------
-       05. INTERFAZ DEL COMPONENTE
-       -------------------------------------- */
+        05. INTERFAZ DEL COMPONENTE
+    --------------------------------------- */
 
     return (
         <section
