@@ -1,6 +1,6 @@
 /* ==========================================
-   COMPONENTE: MonitoringChart
-   Gráfico de monitoreo de variables industriales
+    COMPONENTE: MonitoringChart
+    Gráfico de monitoreo de variables industriales
    ========================================== */
 
 import {
@@ -219,8 +219,26 @@ export default function MonitoringChart({
                             dataKey={dataKey}
                             stroke={color}
                             strokeWidth={2.5}
-                            dot={false}
+
+                            // Dibujamos marcadores únicamente
+                            // cuando se alcanzan los umbrales
+                            dot={(props) => (
+                                <AnomalyDot
+                                    key={props.key}
+                                    cx={props.cx}
+                                    cy={props.cy}
+                                    value={props.payload?.[dataKey]}
+                                    warningThreshold={warningThreshold}
+                                    criticalThreshold={criticalThreshold}
+                                />
+                            )}
+
+                            // Destacamos el punto seleccionado
+                            // cuando el usuario pasa el cursor.
                             activeDot={{ r: 5 }}
+
+                            // Evitamos animaciones adicionales
+                            // porque la simulación ya es progresiva.
                             isAnimationActive={false}
                         />
 
@@ -240,5 +258,57 @@ export default function MonitoringChart({
             </div>
 
         </section>
+    );
+}
+
+
+/* --------------------------------------
+   MARCADOR DE ANOMALÍAS
+   -------------------------------------- */
+
+/**
+ * Dibuja un marcador sobre las mediciones
+ * que alcanzan los límites operativos.
+ *
+ * - Normal: no se dibuja ningún marcador.
+ * - Advertencia: círculo amarillo.
+ * - Crítico: círculo rojo.
+ *
+ * Recibe las coordenadas calculadas por
+ * Recharts y el valor de la medición.
+ */
+function AnomalyDot({
+    cx,
+    cy,
+    value,
+    warningThreshold,
+    criticalThreshold,
+}) {
+
+    // No dibujamos marcadores para valores normales.
+    if (
+        !Number.isFinite(value) ||
+        value < warningThreshold ||
+        !Number.isFinite(cx) ||
+        !Number.isFinite(cy)
+    ) {
+        return null;
+    }
+
+    // Identificamos el nivel de anomalía.
+    const isCritical = value >= criticalThreshold;
+
+    // Elegimos el color según la clasificación.
+    const color = isCritical ? "#ef4444" : "#f59e0b";
+
+    return (
+        <circle
+            cx={cx}
+            cy={cy}
+            r={isCritical ? 5 : 4}
+            fill={color}
+            stroke="#111827"
+            strokeWidth={1.5}
+        />
     );
 }
