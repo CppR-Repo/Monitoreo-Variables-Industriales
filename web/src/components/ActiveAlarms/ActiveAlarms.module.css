@@ -1,0 +1,409 @@
+/* ==========================================
+    COMPONENT: ACTIVE ALARMS
+    Panel de alarmas industriales
+
+    Arquitectura: CSS Modules
+    Metodología: Mobile First
+=========================================== */
+
+/* --------------------------------------
+    01. PANEL PRINCIPAL
+--------------------------------------- */
+.panel {
+    width: 100%;
+    min-width: 0;
+
+    padding: 1.25rem;
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 1rem;
+
+    background: rgba(15, 23, 42, 0.65);
+    color: #e2e8f0;
+}
+
+
+/* --------------------------------------
+    02. ENCABEZADO
+--------------------------------------- */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    min-width: 0;
+}
+
+.eyebrow {
+    color: #22d3ee;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.title {
+    margin: 0;
+
+    color: #f8fafc;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.description {
+    margin: 0;
+
+    color: #94a3b8;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+
+/* --------------------------------------
+    03. INDICADOR GENERAL
+--------------------------------------- */
+.summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 100%;
+    padding: 0.45rem 0.75rem;
+
+    border: 1px solid transparent;
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Estado normal */
+.summary.normal {
+    border-color: rgba(52, 211, 153, 0.25);
+    background: rgba(52, 211, 153, 0.1);
+    color: #6ee7b7;
+}
+
+/* Estado de advertencia */
+.summary.warning {
+    border-color: rgba(251, 191, 36, 0.3);
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+}
+
+/* Estado crítico */
+.summary.critical {
+    border-color: rgba(248, 113, 113, 0.3);
+    background: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+}
+
+
+/* --------------------------------------
+    04. DISTRIBUCIÓN DEL CONTENIDO
+    Mobile First: una columna
+--------------------------------------- */
+.content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.mainContent {
+    min-width: 0;
+}
+
+
+/* ==========================================
+    05. ESTADO NORMAL
+========================================== */
+.normalState {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+
+    min-width: 100%;
+    padding: 1rem;
+
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: 0.75rem;
+
+    background: rgba(52, 211, 153, 0.05);
+}
+
+.normalIndicator {
+    flex-shrink: 0;
+
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: 0.3rem;
+
+    border-radius: 50%;
+    background: #34d399;
+}
+
+.normalTitle {
+    margin: 0 0 0.35rem;
+
+    color: #6ee7b7;
+    font-size: 0.95rem;
+}
+
+.normalDescription {
+    margin: 0;
+
+    color: #94a3b8;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+
+/* --------------------------------------
+    06. LISTADO DE ALARMAS
+--------------------------------------- */
+.alarmsGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+
+    gap: 1rem;
+    height: 100%;
+}
+
+.alarmCard {
+    min-width: 0;
+    padding: 1rem;
+
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+}
+
+/* Alarma en advertencia */
+.alarmCard.warning {
+    border-color: rgba(251, 191, 36, 0.3);
+    background: rgba(251, 191, 36, 0.06);
+}
+
+/* Alarma crítica */
+.alarmCard.critical {
+    border-color: rgba(248, 113, 113, 0.35);
+    background: rgba(248, 113, 113, 0.07);
+}
+
+
+/* ==========================================
+    07. ENCABEZADO DE CADA ALARMA
+========================================== */
+.alarmHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 0.5rem;
+}
+
+.alarmTitle {
+    margin: 0;
+
+    color: #f8fafc;
+    font-size: 1rem;
+}
+
+.alarmStatus {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.warning .alarmStatus {
+    color: #fbbf24;
+}
+
+.critical .alarmStatus {
+    color: #f87171;
+}
+
+
+/* --------------------------------------
+    08. VALORES Y DESCRIPCIONES
+--------------------------------------- */
+.alarmValue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+
+    gap: 0.4rem;
+    margin: 1rem 0 0.35rem;
+
+    color: #f8fafc;
+    font-size: 1.65rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.unit {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.alarmThreshold {
+    margin: 0;
+
+    color: #cbd5e1;
+    font-size: 0.8rem;
+}
+
+.alarmMessage {
+    margin: 0.75rem 0 0;
+
+    color: #94a3b8;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+
+/* --------------------------------------
+    09. RESUMEN DEL PROCESO
+--------------------------------------- */
+.overview {
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.85rem;
+    min-width: 0;
+
+    padding: 1rem;
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 0.75rem;
+
+    background: rgba(8, 14, 24, 0.45);
+}
+
+.overviewTitle {
+    margin: 0 0 0.25rem;
+
+    color: #f8fafc;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.overviewRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 0.5rem;
+
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.overviewRow strong {
+    color: #f8fafc;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Estado general normal */
+.overviewRow strong.normal {
+    color: #6ee7b7;
+}
+
+/* Estado general en advertencia */
+.overviewRow strong.warning {
+    color: #fbbf24;
+}
+
+/* Estado general crítico */
+.overviewRow strong.critical {
+    color: #f87171;
+}
+
+
+/* ==========================================
+    TABLET: 640px
+=========================================== */
+@media (min-width: 640px) {
+    .panel {
+        padding: 1.5rem;
+    }
+
+    .header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .summary {
+        flex-shrink: 0;
+    }
+
+    /*
+    Si existen dos alarmas simultáneas,
+    se muestran una junto a la otra.
+    */
+    .alarmsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* ==========================================
+    DESKTOP: 1100px
+=========================================== */
+@media (min-width: 1100px) {
+    .panel {
+        padding: 1.75rem;
+    }
+
+    .title {
+        font-size: 1.45rem;
+    }
+
+    /*
+     * Dos zonas:
+     *
+     * 1.65fr -> Alarmas activas.
+     * 1fr    -> Resumen del proceso.
+     */
+    .content {
+        grid-template-columns:
+            minmax(0, 1.65fr)
+            minmax(280px, 1fr);
+
+        gap: 1.5rem;
+    }
+
+    /*
+        Las alarmas se apilan verticalmente
+        dentro de la columna izquierda.
+     */
+    .alarmsGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .alarmCard {
+        padding: 1.5rem;
+    }
+
+    .alarmValue {
+        font-size: 1.85rem;
+    }
+
+    .overview {
+        padding: 1.5rem;
+    }
+}

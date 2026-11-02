@@ -67,6 +67,7 @@
   Todas ocupan el ancho disponible
   dentro del contenedor Flexbox.
 */
+.dashboard__alarms,
 .dashboard__statistics,
 .dashboard__export,
 .dashboard__events {

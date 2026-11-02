@@ -23,6 +23,8 @@ import SimulationStats from "./components/SimulationStats/SimulationStats.jsx";
 
 import ExportControls from "./components/ExportControls/ExportControls.jsx";
 
+import ActiveAlarms from "./components/ActiveAlarms/ActiveAlarms.jsx";
+
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
 import temperatureIcon from "./assets/icons/temperatura.svg";
@@ -138,9 +140,18 @@ export default function App() {
               min={0}
               max={70}
             />
-
           </section>
 
+          {/* --------------------------------
+            PANEL DE ALARMAS ACTIVAS
+          --------------------------------- */}
+
+          <div className="dashboard__alarms">
+              <ActiveAlarms
+                  currentReading={currentReading}
+                  statuses={statuses}
+              />
+          </div>
 
           {/* --------------------------------
               CONTROLES DE SIMULACIÓN
