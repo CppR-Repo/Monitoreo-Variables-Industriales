@@ -1,4 +1,3 @@
-
 /* ==========================================
     UTILITY: ACTIVE ALARMS
     Evaluación de alarmas industriales activas

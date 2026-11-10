@@ -8,50 +8,15 @@ import {
     exportEventsToCSV,
 } from "../../utils/export.js";
 
+import {
+    downloadCSV,
+} from "../../utils/downloadCSV.js";
+
 import styles from "./ExportControls.module.css";
 
 
 /* --------------------------------------
-    01. DESCARGA DE ARCHIVOS
---------------------------------------- */
-
-/*
-    Genera y descarga un archivo CSV.
-
-    El BOM facilita que Excel reconozca
-    correctamente caracteres UTF-8.
-*/
-function downloadCSV(content, filename) {
-
-    const BOM = "\uFEFF";
-
-    const blob = new Blob(
-        [BOM, content],
-        {
-            type: "text/csv;charset=utf-8;",
-        }
-    );
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = filename;
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    // Liberamos el recurso temporal después
-    // de iniciar la descarga.
-    setTimeout(() => {
-        URL.revokeObjectURL(url);
-    }, 1000);
-}
-
-
-/* --------------------------------------
-    02. COMPONENTE PRINCIPAL
+    COMPONENTE PRINCIPAL
 --------------------------------------- */
 
 /*

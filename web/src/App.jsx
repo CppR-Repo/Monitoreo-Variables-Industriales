@@ -25,6 +25,8 @@ import ExportControls from "./components/ExportControls/ExportControls.jsx";
 
 import ActiveAlarms from "./components/ActiveAlarms/ActiveAlarms.jsx";
 
+import AlarmHistory from "./components/AlarmHistory/AlarmHistory.jsx";
+
 // Iconos de las variables industriales.
 import pressureIcon from "./assets/icons/presion.svg";
 import temperatureIcon from "./assets/icons/temperatura.svg";
@@ -61,7 +63,7 @@ const MonitoringChart = lazy(
   - Tarjetas de monitoreo.
   - Controles de simulación.
   - Gráficos de presión y temperatura.
- */
+*/
 export default function App() {
 
   /* --------------------------------------
@@ -69,20 +71,33 @@ export default function App() {
   --------------------------------------- */
 
   const {
+    // Estado general.
     scenario,
     currentIndex,
     readings,
     currentReading,
     statuses,
 
+    // Reproducción automática.
     isPlaying,
     isFinished,
     speed,
 
+    // Episodios y reconocimientos.
+    alarmEpisodes,
+    acknowledgeActiveAlarm,
+    acknowledgeHistoricalAlarm,
+
+    // Historial acumulado de episodios.
+    alarmHistory,
+    alarmHistorySummary,
+
+    // Controles manuales.
     nextReading,
     resetSimulation,
     changeScenario,
 
+    // Controles automáticos.
     playSimulation,
     pauseSimulation,
     changeSpeed,
@@ -142,15 +157,37 @@ export default function App() {
             />
           </section>
 
-          {/* --------------------------------
-            PANEL DE ALARMAS ACTIVAS
-          --------------------------------- */}
+          {/* ==================================
+            PANEL DE ALARMAS INDUSTRIALES
+          ================================== */}
 
           <div className="dashboard__alarms">
+
               <ActiveAlarms
-                  currentReading={currentReading}
-                  statuses={statuses}
+
+                // Medición y estados actuales.
+                currentReading={currentReading}
+                statuses={statuses}
+
+                // Episodios activos.
+                alarmEpisodes={alarmEpisodes}
+                // Acción de reconocimiento.
+                onAcknowledge={acknowledgeActiveAlarm}
+
+                // Historial acumulado.
+                alarmHistory={alarmHistory}
+                alarmHistorySummary={alarmHistorySummary}
               />
+          </div>
+
+          {/* ---------------------------------------
+            REGISTRO HISTÓRICO DETALLADO
+          ---------------------------------------- */}
+          <div className="dashboard__alarm-history">
+            <AlarmHistory
+            history={alarmHistory}
+            onAcknowledge={acknowledgeHistoricalAlarm}
+            />
           </div>
 
           {/* --------------------------------
@@ -274,4 +311,3 @@ export default function App() {
     </div>
   );
 }
-

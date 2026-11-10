@@ -1,7 +1,8 @@
-
 /* ==========================================
     HOOK PERSONALIZADO: useSimulation
-    Gestión del estado de la simulación en React
+
+    Gestión del estado de la simulación
+    y reconocimiento de alarmas en React.
 =========================================== */
 
 import { useEffect, useMemo, useState } from "react";
@@ -11,12 +12,35 @@ import {
     generateSimulation,
 } from "../services/simulation.js";
 
-// Evaluación de los estados de las variables.
+// Evaluación de presión y temperatura.
 import {
     evaluateReading,
 } from "../utils/thresholds.js";
 
-/*
+// Identificación de episodios activos.
+import {
+    getCurrentAlarmEpisodes,
+} from "../utils/alarmEpisodes.js";
+
+// Gestión de reconocimientos.
+import {
+    acknowledgeAlarm,
+    isAlarmAcknowledged,
+    resetAcknowledgements,
+} from "../utils/acknowledgements.js";
+
+// Historial acumulado de alarmas
+import {
+    generateAlarmHistory,
+    summarizeAlarmHistory,
+} from "../utils/alarmHistory.js";
+
+import {
+    acknowledgeHistoricalEpisode,
+} from "../utils/historicalAcknowledgements.js";
+
+
+/* ==========================================
     HOOK: useSimulation
 
     Responsabilidades:
@@ -29,7 +53,10 @@ import {
     7. Configurar la velocidad.
     8. Reiniciar la simulación.
     9. Evaluar presión y temperatura.
- */
+    10. Identificar episodios activos.
+    11. Gestionar reconocimientos.
+=========================================== */
+
 export function useSimulation() {
 
     /* --------------------------------------
@@ -42,136 +69,229 @@ export function useSimulation() {
     // Posición actual dentro de las mediciones.
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Indica si la reproducción automática está activa.
+    // Estado de reproducción automática.
     const [isPlaying, setIsPlaying] = useState(false);
 
     /*
-        Intervalo entre lecturas, en milisegundos.
+        Intervalo entre lecturas:
 
-        1000 ms = 1 segundo real por lectura.
-        500 ms  = 0,5 segundos reales por lectura.
-        250 ms  = 0,25 segundos reales por lectura.
-     */
+        1000 ms = 1 segundo por lectura.
+        500 ms  = 0,5 segundos por lectura.
+        250 ms  = 0,25 segundos por lectura.
+    */
     const [speed, setSpeed] = useState(1000);
 
 
-    /* --------------------------------------
-        02. GENERACIÓN DE MEDICIONES
-    --------------------------------------- */
+    /* ------------------------------------------
+        02. ESTADO DE RECONOCIMIENTOS
+    ------------------------------------------ */
 
     /*
-        Generamos las mediciones únicamente cuando
+        Almacena los identificadores de los
+        episodios reconocidos por el operador.
+    
+        Ejemplo:
+    
+        {
+            '["combined","pressure",24,"warning"]': true
+        }
+    */
+    const [
+        acknowledgements,
+        setAcknowledgements,
+    ] = useState(resetAcknowledgements);
+
+
+    /* ----------------------------------------
+        03. GENERACIÓN DE MEDICIONES
+    ---------------------------------------- */
+
+    /*
+        Solo regeneramos las lecturas cuando
         cambia el escenario.
 
-        La semilla fija permite obtener resultados
+        La semilla fija garantiza resultados
         reproducibles.
-     */
+    */
     const readings = useMemo(() => {
+
         return generateSimulation({
             seed: 42,
             scenario,
         });
+
     }, [scenario]);
 
 
-    /* -----------------------------------------
-        03. LECTURA Y ESTADOS ACTUALES
-    ----------------------------------------- */
+    /* ------------------------------------------
+        04. LECTURA Y ESTADOS ACTUALES
+    ------------------------------------------ */
 
-    // Obtenemos la medición correspondiente al índice.
     const currentReading = readings[currentIndex];
 
-    // Evaluamos el estado de presión y temperatura.
     const statuses = evaluateReading(currentReading);
 
-    // Comprobamos si llegamos a la última medición.
-    const isFinished = currentIndex >= readings.length - 1;
+    const isFinished =
+        currentIndex >= readings.length - 1;
+
+
+    /* --------------------------------------------
+        05. EPISODIOS DE ALARMA ACTIVOS
+    -------------------------------------------- */
+
+    /*
+        Determinamos el episodio correspondiente
+        a cada variable en la lectura actual.
+
+        Se recalcula cuando:
+        - Cambia el escenario.
+        - Avanza o retrocede el índice.
+        - Cambian las mediciones.
+    */
+    const activeEpisodes = useMemo(() => {
+
+        return getCurrentAlarmEpisodes({
+            readings,
+            currentIndex,
+            scenario,
+        });
+
+    }, [readings, currentIndex, scenario]);
+
+
+    /* ------------------------------------------------
+        06. EPISODIOS CON RECONOCIMIENTO
+    ------------------------------------------------ */
+
+    /*
+        Combinamos cada episodio con su estado
+        de reconocimiento.
+
+        No modificamos los objetos originales.
+    */
+    const alarmEpisodes = useMemo(() => {
+
+        return activeEpisodes.map((episode) => ({
+            ...episode,
+
+            acknowledged: isAlarmAcknowledged(
+                acknowledgements,
+                episode.id
+            ),
+        }));
+
+    }, [activeEpisodes, acknowledgements]);
+
+
+    /* ==========================================
+        07. HISTORIAL ACUMULADO DE ALARMAS
+    =========================================== */
+
+    /*
+        Recuperamos todos los episodios ocurridos
+        desde el inicio de la simulación hasta la medición actual.
+
+        Los reconocimientos se mantienen asociados a sus episodios correspondientes.
+    */
+    const alarmHistory = useMemo(() => {
+
+        return generateAlarmHistory({
+            readings,
+            currentIndex,
+            scenario,
+            acknowledgements,
+        });
+
+    }, [
+        readings,
+        currentIndex,
+        scenario,
+        acknowledgements,
+    ]);
+
+    /*
+        Calculamos los indicadores históricos:
+        - Episodios totales.
+        - Advertencias.
+        - Condiciones críticas.
+        - Episodios reconocidos.
+        - Episodios pendientes.
+    */
+    const alarmHistorySummary = useMemo(() => {
+
+        return summarizeAlarmHistory(alarmHistory);
+
+    }, [alarmHistory]);
 
 
     /* -----------------------------------------
-        04. REPRODUCCIÓN AUTOMÁTICA
+        08. REPRODUCCIÓN AUTOMÁTICA
     ----------------------------------------- */
 
-    /*
-        useEffect administra el temporizador.
-
-        Solo se activa cuando isPlaying es true
-        y todavía quedan mediciones por recorrer.
-
-        Cada intervalo incrementa currentIndex.
-     */
     useEffect(() => {
 
-        // No iniciamos el temporizador si está pausado
-        // o si llegamos a la última medición.
+        // No reproducimos si está pausado
+        // o ya alcanzamos el final.
         if (!isPlaying || isFinished) {
             return;
         }
 
-        // Creamos el temporizador de reproducción.
         const intervalId = setInterval(() => {
 
             setCurrentIndex((previousIndex) => {
 
-                // Impedimos avanzar más allá del último índice.
                 return Math.min(
                     previousIndex + 1,
                     readings.length - 1
                 );
+
             });
 
         }, speed);
 
         /*
-            Función de limpieza.
+            Limpieza del temporizador.
 
-            React ejecuta esta función cuando:
-            - Se pausa la reproducción.
-            - Cambia la velocidad.
-            - Se alcanza la última lectura.
-            - El componente se desmonta.
-
-            Evita mantener temporizadores innecesarios.
-         */
+            Se ejecuta al pausar, cambiar
+            velocidad, finalizar o desmontar.
+        */
         return () => {
             clearInterval(intervalId);
         };
 
-    }, [isPlaying, isFinished, speed, readings.length]);
+    }, [
+        isPlaying,
+        isFinished,
+        speed,
+        readings.length,
+    ]);
 
 
-    /* ---------------------------------------
-        05. AVANCE MANUAL
+    /* --------------------------------------
+        09. AVANCE MANUAL
     --------------------------------------- */
 
-    /*
-        Avanza una medición.
-
-        Pausamos primero la reproducción para evitar
-        que el temporizador avance simultáneamente.
-     */
     function nextReading() {
+
         setIsPlaying(false);
 
         setCurrentIndex((previousIndex) => {
+
             return Math.min(
                 previousIndex + 1,
                 readings.length - 1
             );
+
         });
     }
 
 
     /* --------------------------------------
-        06. REPRODUCIR
+        10. REPRODUCIR
     --------------------------------------- */
 
-    /*
-        Inicia o reanuda la reproducción.
-
-        No inicia si ya estamos en la última lectura.
-     */
     function playSimulation() {
+
         if (isFinished) {
             return;
         }
@@ -181,72 +301,114 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        07. PAUSAR
+        11. PAUSAR
     --------------------------------------- */
 
-    /*
-        Detiene el avance automático.
-
-        Conserva el índice actual para poder
-        reanudar desde la misma medición.
-     */
     function pauseSimulation() {
         setIsPlaying(false);
     }
 
 
     /* --------------------------------------
-        08. REINICIAR
+        12. REINICIAR SIMULACIÓN
     --------------------------------------- */
 
     /*
-        Detiene la reproducción y vuelve
-        a la primera medición.
-     */
+        Reinicia el índice y elimina todos
+        los reconocimientos anteriores.
+    */
     function resetSimulation() {
+
         setIsPlaying(false);
         setCurrentIndex(0);
+
+        setAcknowledgements(
+            resetAcknowledgements()
+        );
     }
 
 
     /* --------------------------------------
-        09. CAMBIAR ESCENARIO
+        13. CAMBIAR ESCENARIO
     --------------------------------------- */
 
     /*
-        Detiene la reproducción, selecciona
-        un escenario y vuelve al inicio.
-
-        useMemo generará las nuevas mediciones.
-     */
+        Selecciona un escenario nuevo y
+        reinicia los reconocimientos.
+    */
     function changeScenario(newScenario) {
+
         setIsPlaying(false);
         setScenario(newScenario);
         setCurrentIndex(0);
+
+        setAcknowledgements(
+            resetAcknowledgements()
+        );
     }
 
 
     /* --------------------------------------
-        10. CAMBIAR VELOCIDAD
+        14. CAMBIAR VELOCIDAD
     --------------------------------------- */
 
-    /*
-        Actualiza el intervalo de reproducción.
-
-        Al cambiar speed, useEffect limpia el
-        temporizador anterior y crea otro con
-        el nuevo intervalo si estamos reproduciendo.
-     */
     function changeSpeed(newSpeed) {
         setSpeed(newSpeed);
     }
 
 
-    /* ---------------------------------------------
-        11. DATOS Y FUNCIONES DISPONIBLES
+    /* --------------------------------------
+        15. RECONOCER UNA ALARMA
+    --------------------------------------- */
+
+    /*
+        Solo permite reconocer un episodio que esté activo en la lectura actual.
+
+        No modifica el estado físico de presión o temperatura.
+    */
+    function acknowledgeActiveAlarm(episodeId) {
+
+        const isActive = activeEpisodes.some(
+            (episode) => episode.id === episodeId
+        );
+
+        if (!isActive) {
+            return;
+        }
+
+        setAcknowledgements((previous) => {
+
+            return acknowledgeAlarm(
+                previous,
+                episodeId
+            );
+
+        });
+    }
+
+
+    /* --------------------------------------------
+        16. RECONOCER ALARMA HISTÓRICA
     --------------------------------------------- */
 
+    function acknowledgeHistoricalAlarm(episodeId) {
+
+        setAcknowledgements((previous) => {
+
+            return acknowledgeHistoricalEpisode({
+                history: alarmHistory, episodeId,
+                acknowledgements: previous,
+            });
+        });
+    }
+
+
+    /* ----------------------------------------------
+        17. DATOS Y FUNCIONES DISPONIBLES
+    ---------------------------------------------- */
+
     return {
+
         // Estado general.
         scenario,
         currentIndex,
@@ -258,6 +420,15 @@ export function useSimulation() {
         isPlaying: isPlaying && !isFinished,
         isFinished,
         speed,
+
+        // Episodios y reconocimientos.
+        alarmEpisodes,
+        acknowledgeActiveAlarm,
+        acknowledgeHistoricalAlarm,
+
+        // Historial acumulado.
+        alarmHistory,
+        alarmHistorySummary,
 
         // Controles manuales.
         nextReading,

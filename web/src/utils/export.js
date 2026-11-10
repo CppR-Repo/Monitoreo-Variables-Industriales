@@ -197,3 +197,82 @@ export function exportEventsToCSV(
 
     return createCSV([headers, ...rows]);
 }
+
+
+/* -----------------------------------------------------------
+    05. EXPORTACIÓN DEL HISTORIAL DE ALARMAS
+---------------------------------------------------------- */
+
+/*
+    Genera un archivo CSV con los episodios históricos recibidos.
+
+    Puede utilizarse tanto con el historial completo como con episodios filtrados.
+
+    No modifica el arreglo original.
+
+    @param {Array} history
+    @returns {string}
+*/
+
+export function exportAlarmHistoryToCSV(history) {
+
+    const headers = [
+        "ID episodio",
+        "Variable",
+        "Severidad",
+        "Lectura inicial",
+        "Última lectura",
+        "Lectura final",
+        "Duración (min)",
+        "Estado",
+        "Reconocimiento",
+    ];
+
+    // Validamos el historial.
+    if (!Array.isArray(history)) {
+        return createCSV([headers]);
+    }
+
+    const VARIABLE_LABELS = {
+        pressure: "Presión",
+        temperature: "Temperatura",
+    };
+
+    const rows = history.map((episode) => {
+
+        const startReading =
+            Number.isInteger(episode.startIndex)
+                ? episode.startIndex + 1
+                : "";
+
+        const lastReading =
+            Number.isInteger(episode.lastObservedIndex)
+                ? episode.lastObservedIndex + 1
+                : "";
+
+        const endReading =
+            Number.isInteger(episode.endIndex)
+                ? episode.endIndex + 1
+                : "";
+
+        return [
+            episode.id,
+            VARIABLE_LABELS[episode.variable] ??
+                episode.variable,
+            STATUS_LABELS[episode.status] ??
+                episode.status,
+            startReading,
+            lastReading,
+            endReading,
+            episode.durationMinutes,
+            episode.isActive
+                ? "Activa"
+                : "Finalizada",
+            episode.acknowledged
+                ? "Reconocida"
+                : "Pendiente",
+        ];
+    });
+
+    return createCSV([headers, ...rows]);
+}

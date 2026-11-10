@@ -1,4 +1,3 @@
-
 /* ==========================================
     TESTS: EVENTS
     Pruebas del historial de eventos industriales

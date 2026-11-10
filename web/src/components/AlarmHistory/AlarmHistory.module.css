@@ -1,0 +1,447 @@
+/* ==========================================
+    COMPONENT: ALARM HISTORY
+    Diseño Mobile First
+=========================================== */
+
+/* --------------------------------------
+    01. PANEL PRINCIPAL
+--------------------------------------- */
+
+.panel {
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 1rem;
+    background: #111827;
+    color: #f8fafc;
+}
+
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #67e8f9;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.title {
+    margin: 0;
+    font-size: clamp(1.15rem, 3vw, 1.5rem);
+    line-height: 1.3;
+}
+
+.description {
+    margin: 0.5rem 0 0;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.counter {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid rgba(103, 232, 249, 0.3);
+    border-radius: 999px;
+    color: #67e8f9;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.empty {
+    padding: 1.5rem;
+    border: 1px dashed rgba(148, 163, 184, 0.3);
+    border-radius: 0.75rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* --------------------------------------
+    02. TARJETAS MÓVILES
+--------------------------------------- */
+
+.cards {
+    display: grid;
+    gap: 0.875rem;
+}
+
+.card {
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 0.75rem;
+    background: #1e293b;
+}
+
+.cardHeader,
+.cardFooter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.cardDetails {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.detailLabel {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+.detailValue {
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}
+
+.cardFooter {
+    padding-top: 0.875rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+/* --------------------------------------
+    03. INDICADORES
+--------------------------------------- */
+
+.severity,
+.active,
+.finished,
+.acknowledged,
+.pending {
+    display: inline-block;
+    padding: 0.3rem 0.55rem;
+    border-radius: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+.critical {
+    background: rgba(239, 68, 68, 0.12);
+    color: #fca5a5;
+}
+
+.active {
+    background: rgba(34, 211, 238, 0.12);
+    color: #67e8f9;
+}
+
+.finished {
+    background: rgba(148, 163, 184, 0.12);
+    color: #cbd5e1;
+}
+
+.acknowledged {
+    background: rgba(34, 197, 94, 0.12);
+    color: #86efac;
+}
+
+.pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+
+/* --------------------------------------------------
+    04. EXPORTACIÓN DEL HISTORIAL
+--------------------------------------------------- */
+.exportActions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    margin-block: 1rem 1.5rem;
+}
+
+.exportButton,
+.exportButtonSecondary {
+    min-height: 2.75rem;
+    padding: 0.75rem 1rem;
+
+    border-radius: 0.625rem;
+
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.exportButton {
+    border: 1px solid #0891b2;
+    background: #0891b2;
+    color: #ffffff;
+}
+.acknowledgeButton:hover:not(:disabled) {
+    background: #0e7490;
+}
+
+.exportButtonSecondary {
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    background: transparent;
+    color: #67e8f9;
+}
+.exportButtonSecondary:hover:not(:disabled) {
+    background: rgba(34, 211, 238, 0.1);
+}
+
+.exportButton:disabled,
+.exportButtonSecondary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.exportButton:focus-visible,
+.exportButtonSecondary:focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 3px;
+}
+
+
+/* --------------------------------------------------
+    05. FILTROS DEL HISTORIAL
+--------------------------------------------------- */
+.filters {
+    margin-bottom: 1rem;
+    padding: 1rem;
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 0.75rem;
+
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.filtersHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.filtersTitle {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.resetButton {
+    padding: 0.5rem 0.75rem;
+
+    border: 1px solid rgba(103, 232, 249, 0.3);
+    border-radius: 0.5rem;
+
+    background: transparent;
+
+    color: #67e8f9;
+
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.resetButton:hover:not(:disabled) {
+    background: rgba(103, 232, 249, 0.08);
+}
+
+.resetButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.filtersGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.875rem;
+}
+
+.filterField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+    color: #cbd5e1;
+    font-size: 0.8rem;
+}
+
+.filterField select {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 0.5rem;
+    background: #1e293b;
+    color: #f8fafc;
+    font: inherit;
+    cursor: pointer;
+}
+.filterField select:focus-visible,
+.resetButton:focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 2px;
+}
+
+.results {
+    margin: 0 0 1rem;
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+
+/* --------------------------------------
+    06. TABLA
+--------------------------------------- */
+
+/* Oculta en dispositivos pequeños. */
+.tableContainer {
+    display: none;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th,
+.table td {
+    padding: 0.875rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.table th {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.table tbody tr:hover {
+    background: rgba(148, 163, 184, 0.06);
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
+/* ------------------------------------------
+    07. RECONOCIMIENTO HISTÓRICO
+------------------------------------------ */
+.acknowledgeButton {
+    min-width: 2.25rem;
+    padding: 0.45rem 0.8rem;
+
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    border-radius: 0.5rem;
+
+    background: rgba(34, 211, 238, 0.08);
+    color: #67e8f9;
+
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+.acknowledgeButton:hover {
+    background: rgba(34, 211, 238, 0.16);
+    border-color: #22d3ee;
+}
+.acknowledgeButton:focus-visible {
+    outline: 2 solid #22d3ee;
+    outline-offset: 3px;
+}
+
+
+/* --------------------------------------
+    TABLET / DESKTOP
+--------------------------------------- */
+@media (min-width: 600px) {
+    .exportActions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exportButton,
+    .exportButtonSecondary,
+    .acknowledgeButton {
+        transition: none;
+    }
+}
+
+@media (min-width: 1100px) {
+    .filtersGrid {
+        grid-template-columns: repeat(
+            4,
+            minmax(0, 1fr)
+        );
+    }
+}
+
+@media (min-width: 900px) {
+
+    .panel {
+        padding: 1.5rem;
+    }
+
+    .cards {
+        display: none;
+    }
+
+    .tableContainer {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}

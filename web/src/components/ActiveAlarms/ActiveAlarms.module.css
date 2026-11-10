@@ -202,9 +202,9 @@
 }
 
 
-/* ==========================================
+/* ------------------------------------------------
     07. ENCABEZADO DE CADA ALARMA
-========================================== */
+------------------------------------------------ */
 .alarmHeader {
     display: flex;
     flex-wrap: wrap;
@@ -277,6 +277,111 @@
 /* --------------------------------------
     09. RESUMEN DEL PROCESO
 --------------------------------------- */
+/*
+    Zona de interacción del operador.
+    
+    Mobile First:
+    información y botón apilados.
+*/
+.acknowledgement {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 0.85rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+
+/* -----------------------------------------
+    ESTADO DE RECONOCIMIENTO
+----------------------------------------- */
+.acknowledgementInfo {
+    display: flex;
+    align-items: center;
+
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.notificationIcon {
+    display: flex;
+    flex-shrink: 0;
+
+    width: 1.25rem;
+    height: 1.25rem;
+
+    object-fit: contain;
+
+    filter: brightness(0) invert(1);
+}
+
+.acknowledgementStatus {
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* Pendiente */
+.pending {
+    color: #FBBF24;
+}
+
+/* Reconocida */
+.acknowledged {
+    color: #6EE7B7;
+}
+
+
+/* -------------------------------------
+    BOTÓN DE RECONOCIMIENTO
+------------------------------------- */
+.acknowledgeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    border-radius: 0.6rem;
+
+    background: rgba(34, 211, 238, 0.1);
+    color: #67e8f9;
+
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+.acknowledgeButton:hover:not(:disabled) {
+    border-color: rgba(34, 211, 238, 0.75);
+    background: rgba(34, 211, 238, 0.18);
+}
+.acknowledgeButton:focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 3px;
+}
+.acknowledgeButton:disabled {
+    border-color: rgba(148, 163, 184, 0.2);
+    background: rgba(148, 163, 184, 0.8);
+    color: #94a3b8;
+
+    cursor: not-allowed;
+}
+
+
+/* -------------------------------------------
+    CONTADORES DEL RESUMEN
+------------------------------------------- */
+
 .overview {
     display: flex;
     flex-direction: column;
@@ -333,6 +438,142 @@
 }
 
 
+/* -----------------------------------------
+    CONTADORES DEL RESUMEN
+----------------------------------------- */
+.overviewRow strong.pendingCount {
+    color: #fbbf24;
+}
+
+.overviewRow strong.acknowledgedCount {
+    color: #6ee7b7;
+}
+
+
+/* -----------------------------------------------
+    HISTORIAL ACUMULADO DE ALARMAS
+----------------------------------------------- */
+
+/* Contenedor principal */
+.historyOverview {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    padding: 1.5rem;
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 1rem;
+
+    background: rgba(15, 23, 42, 0.55);
+}
+
+/* Encabezado */
+.historyHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.historyTitle {
+    margin: 0;
+
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.historyDescription {
+    margin: 0.35rem 0 0;
+
+    color: #94a3b8;
+
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* Contadores Históricos */
+.historyStats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.historyStat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    padding: 1rem;
+
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 0.75rem;
+
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.historyStatLabel {
+    color: #94a3b8;
+
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.historyStatValue {
+    color: #f8fafc;
+
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Colores por severidad */
+.historyWarning .historyStatValue {
+    color: #fbbf24;
+}
+
+.historyCritical .historyStatValue {
+    color: #fb7185;
+}
+
+/* Reconocimiento Histórico */
+.historyAcknowledgements {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    padding-top: 1rem;
+
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.historyRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    font-size: 0.875rem;
+}
+
+.historyRow span {
+    color: #94a3b8;
+}
+
+.historyRow strong {
+    font-variant-numeric: tabular-nums;
+}
+
+.historyAcknowledged {
+    color: #4ade80;
+}
+
+.historyPending {
+    color: #fbbf24;
+}
+
+
 /* ==========================================
     TABLET: 640px
 =========================================== */
@@ -357,6 +598,25 @@
     */
     .alarmsGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .acknowledgement {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .acknowledgeButton {
+        width: auto;
+    }
+
+    .historyStats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .historyStat {
+        min-width: 0;
     }
 }
 
@@ -405,5 +665,21 @@
 
     .overview {
         padding: 1.5rem;
+    }
+
+    .acknowledgement {
+        gap: 1rem;
+    }
+
+    .acknowledgeButton {
+        flex-shrink: 0;
+    }
+
+    .historyOverview {
+        padding: 1.75rem;
+    }
+
+    .historyStatValue {
+        font-size: 2rem;
     }
 }

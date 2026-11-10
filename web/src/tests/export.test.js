@@ -1,4 +1,3 @@
-
 /* ==========================================
     TESTS: EXPORT
     Pruebas de exportación CSV industrial
