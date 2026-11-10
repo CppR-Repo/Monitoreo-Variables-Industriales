@@ -18,7 +18,7 @@ import { generateEvents } from "../utils/events.js";
     las transiciones de presión.
 
     La temperatura permanece normal.
- */
+*/
 const readings = [
     {
         index: 0,
@@ -116,9 +116,9 @@ test("detecta el retorno a operación normal", () => {
 });
 
 
-/* ---------------------------------------------
+/* ------------------------------------------------
     03. LÍMITES Y ESCENARIOS ESPECIALES
---------------------------------------------- */
+------------------------------------------------ */
 
 test("limita el historial al índice solicitado", () => {
     const events = generateEvents(readings, 2);

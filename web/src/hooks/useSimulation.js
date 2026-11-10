@@ -1,8 +1,26 @@
 /* ==========================================
-    HOOK PERSONALIZADO: useSimulation
+    HOOK: useSimulation
 
-    Gestión del estado de la simulación
-    y reconocimiento de alarmas en React.
+    Responsabilidades:
+    1. Restauración de sesión.
+    2. Estados principales.
+    3. Seleccionar el escenario.
+    4. Persistir automáticamente el estado.
+    5. Generar las mediciones.
+    6. Mantener la lectura actual.
+    7. Episodios de alarma activos.
+    8. Episodios con reconocimiento.
+    9. Historial acumulado de alarmas.
+    10. Reproducción automática.
+    11. Avance manual.
+    12. Reproducir.
+    13. Pausar la reproducción.
+    14. Reiniciar la simulación.
+    15. Cambiar escenario.
+    16. Cambiar velocidad.
+    17. Reconocer una alarma.
+    18. Reconocer alarma histórica.
+    19. Datos y funciones disponibles.
 =========================================== */
 
 import { useEffect, useMemo, useState } from "react";
@@ -39,37 +57,59 @@ import {
     acknowledgeHistoricalEpisode,
 } from "../utils/historicalAcknowledgements.js";
 
+import {
+    DEFAULT_SIMULATION_STATE,
+    loadSimulationState,
+    saveSimulationState,
+} from "../utils/simulationStorage.js";
 
-/* ==========================================
-    HOOK: useSimulation
-
-    Responsabilidades:
-    1. Seleccionar el escenario.
-    2. Generar las mediciones.
-    3. Mantener la lectura actual.
-    4. Avanzar manualmente.
-    5. Reproducir automáticamente.
-    6. Pausar la reproducción.
-    7. Configurar la velocidad.
-    8. Reiniciar la simulación.
-    9. Evaluar presión y temperatura.
-    10. Identificar episodios activos.
-    11. Gestionar reconocimientos.
-=========================================== */
 
 export function useSimulation() {
 
     /* --------------------------------------
-        01. ESTADOS PRINCIPALES
+        01. RESTAURACIÓN DE SESIÓN
+    --------------------------------------- */
+
+    /*
+        useState recibe una función para recuperar
+        el estado inicial durante la inicialización del componente, sin consultar localStorage
+        en cada renderizado.
+
+        Si no existe una sesión válida, utilizamos los valores predeterminados.
+    */
+
+    const [initialState] = useState(() => {
+
+        // En entornos sin navegador, utilizamos
+        // los valores predeterminados.
+        if (typeof window === "undefined") {
+            return DEFAULT_SIMULATION_STATE;
+        }
+
+        // Recuperamos una sesión válida o
+        // utilizamos los valores iniciales.
+        try {
+            return (
+                loadSimulationState(window.localStorage) ??
+                DEFAULT_SIMULATION_STATE
+            );
+        } catch {
+            return DEFAULT_SIMULATION_STATE;
+        }
+    });
+
+
+    /* --------------------------------------
+        02. ESTADOS PRINCIPALES
     --------------------------------------- */
 
     // Escenario seleccionado.
-    const [scenario, setScenario] = useState("normal");
+    const [scenario, setScenario] = useState(initialState.scenario);
 
     // Posición actual dentro de las mediciones.
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(initialState.currentIndex);
 
-    // Estado de reproducción automática.
+    // Siempre iniciamos con la reproducción pausada.
     const [isPlaying, setIsPlaying] = useState(false);
 
     /*
@@ -79,11 +119,11 @@ export function useSimulation() {
         500 ms  = 0,5 segundos por lectura.
         250 ms  = 0,25 segundos por lectura.
     */
-    const [speed, setSpeed] = useState(1000);
+    const [speed, setSpeed] = useState(initialState.speed);
 
 
     /* ------------------------------------------
-        02. ESTADO DE RECONOCIMIENTOS
+        03. ESTADO DE RECONOCIMIENTOS
     ------------------------------------------ */
 
     /*
@@ -99,11 +139,52 @@ export function useSimulation() {
     const [
         acknowledgements,
         setAcknowledgements,
-    ] = useState(resetAcknowledgements);
+    ] = useState(initialState.acknowledgements);
+
+
+    /* ------------------------------------------
+        04. PERSISTENCIA AUTOMÁTICA
+    ------------------------------------------ */
+
+    /*
+        Guardamos únicamente los estados necesarios para reconstruir la sesión:
+
+        - Escenario seleccionado.
+        - Índice de la última medición.
+        - Velocidad de reproducción.
+        - Reconocimientos de alarmas.
+
+        No guardamos las mediciones ni el historial, porque se calculan nuevamente a partir
+        del escenario y del índice restaurados.
+
+        Tampoco guardamos isPlaying: por seguridad, la reproducción siempre comienza pausada.
+    */
+    useEffect(() => {
+
+        if (typeof window === "undefined") {
+            return;
+        }
+
+        try {
+            saveSimulationState(window.localStorage, {
+                scenario,
+                currentIndex,
+                speed,
+                acknowledgements,
+            });
+        } catch {
+            // Protege el acceso a localStorage si el navegador lo restringe.
+        }
+    }, [
+        scenario,
+        currentIndex,
+        speed,
+        acknowledgements,
+    ]);
 
 
     /* ----------------------------------------
-        03. GENERACIÓN DE MEDICIONES
+        05. GENERACIÓN DE MEDICIONES
     ---------------------------------------- */
 
     /*
@@ -124,7 +205,7 @@ export function useSimulation() {
 
 
     /* ------------------------------------------
-        04. LECTURA Y ESTADOS ACTUALES
+        06. LECTURA Y ESTADOS ACTUALES
     ------------------------------------------ */
 
     const currentReading = readings[currentIndex];
@@ -136,7 +217,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------------
-        05. EPISODIOS DE ALARMA ACTIVOS
+        07. EPISODIOS DE ALARMA ACTIVOS
     -------------------------------------------- */
 
     /*
@@ -160,7 +241,7 @@ export function useSimulation() {
 
 
     /* ------------------------------------------------
-        06. EPISODIOS CON RECONOCIMIENTO
+        08. EPISODIOS CON RECONOCIMIENTO
     ------------------------------------------------ */
 
     /*
@@ -183,9 +264,9 @@ export function useSimulation() {
     }, [activeEpisodes, acknowledgements]);
 
 
-    /* ==========================================
-        07. HISTORIAL ACUMULADO DE ALARMAS
-    =========================================== */
+    /* ----------------------------------------------------------
+        09. HISTORIAL ACUMULADO DE ALARMAS
+    --------------------------------------------------------- */
 
     /*
         Recuperamos todos los episodios ocurridos
@@ -225,7 +306,7 @@ export function useSimulation() {
 
 
     /* -----------------------------------------
-        08. REPRODUCCIÓN AUTOMÁTICA
+        10. REPRODUCCIÓN AUTOMÁTICA
     ----------------------------------------- */
 
     useEffect(() => {
@@ -268,7 +349,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        09. AVANCE MANUAL
+        11. AVANCE MANUAL
     --------------------------------------- */
 
     function nextReading() {
@@ -287,7 +368,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        10. REPRODUCIR
+        12. REPRODUCIR
     --------------------------------------- */
 
     function playSimulation() {
@@ -301,7 +382,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        11. PAUSAR
+        13. PAUSAR
     --------------------------------------- */
 
     function pauseSimulation() {
@@ -310,12 +391,15 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        12. REINICIAR SIMULACIÓN
+        14. REINICIAR SIMULACIÓN
     --------------------------------------- */
 
     /*
-        Reinicia el índice y elimina todos
-        los reconocimientos anteriores.
+        Reinicia la posición de la simulación y elimina los reconocimientos anteriores.
+
+        Conserva el escenario y la velocidad seleccionados por el operador.
+
+        El efecto de persistencia guardará automáticamente el nuevo estado.
     */
     function resetSimulation() {
 
@@ -329,7 +413,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        13. CAMBIAR ESCENARIO
+        15. CAMBIAR ESCENARIO
     --------------------------------------- */
 
     /*
@@ -349,7 +433,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        14. CAMBIAR VELOCIDAD
+        16. CAMBIAR VELOCIDAD
     --------------------------------------- */
 
     function changeSpeed(newSpeed) {
@@ -358,7 +442,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------
-        15. RECONOCER UNA ALARMA
+        17. RECONOCER UNA ALARMA
     --------------------------------------- */
 
     /*
@@ -388,7 +472,7 @@ export function useSimulation() {
 
 
     /* --------------------------------------------
-        16. RECONOCER ALARMA HISTÓRICA
+        18. RECONOCER ALARMA HISTÓRICA
     --------------------------------------------- */
 
     function acknowledgeHistoricalAlarm(episodeId) {
@@ -396,7 +480,8 @@ export function useSimulation() {
         setAcknowledgements((previous) => {
 
             return acknowledgeHistoricalEpisode({
-                history: alarmHistory, episodeId,
+                history: alarmHistory,
+                episodeId,
                 acknowledgements: previous,
             });
         });
@@ -404,7 +489,7 @@ export function useSimulation() {
 
 
     /* ----------------------------------------------
-        17. DATOS Y FUNCIONES DISPONIBLES
+        19. DATOS Y FUNCIONES DISPONIBLES
     ---------------------------------------------- */
 
     return {

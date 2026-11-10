@@ -244,9 +244,9 @@ test("no reconoce identificadores inexistentes", () => {
 });
 
 
-/* --------------------------------------
+/* ----------------------------------------------------
     04. INTEGRACIÓN CON EL HISTORIAL REAL
---------------------------------------- */
+---------------------------------------------------- */
 
 test("el historial refleja el reconocimiento y actualiza los contadores", () => {
 

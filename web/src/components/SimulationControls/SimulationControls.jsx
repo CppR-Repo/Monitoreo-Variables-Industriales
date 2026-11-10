@@ -1,4 +1,3 @@
-
 /* ==========================================
     COMPONENTE: SIMULATION CONTROLS
     Controles de la simulación industrial
@@ -13,7 +12,7 @@ import styles from "./SimulationControls.module.css";
 /*
     Cada valor debe coincidir con los escenarios
     definidos en nuestro motor simulation.js.
- */
+*/
 const SCENARIOS = [
     { value: "normal", label: "Operación normal" },
     { value: "overpressure", label: "Sobrepresión" },
@@ -36,7 +35,7 @@ const SCENARIOS = [
     1000 ms = velocidad normal (1x).
     500 ms  = velocidad doble (2x).
     250 ms  = velocidad cuádruple (4x).
- */
+*/
 const SPEED_OPTIONS = [
     { value: 1000, label: "1x — Normal" },
     { value: 500, label: "2x — Rápida" },
@@ -54,7 +53,7 @@ const SPEED_OPTIONS = [
 
     No genera mediciones ni administra
     temporizadores por su cuenta.
- */
+*/
 export default function SimulationControls({
     // Información de la simulación.
     scenario,
